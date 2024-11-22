@@ -1,0 +1,30 @@
+-- Benutzer
+INSERT INTO users (email, password, balance) VALUES
+('alice@example.com', 'password123', 1000),
+('bob@example.com', 'securepass456', 800),
+('charlie@example.com', 'pass789', 1200);
+
+-- Transaktionen
+INSERT INTO transactions (sender_id, receiver_id, amount, description) VALUES
+(1, 2, 50.00, 'Dinner'),
+(2, 3, 200.00, 'Loan repayment'),
+(3, 1, 150.00, 'Freelance work payment');
+
+-- Nachrichten
+INSERT INTO messages (sender_id, receiver_id, message, is_wall_post) VALUES
+(1, 2, 'Hello Bob! How are you?', FALSE),
+(2, 1, 'Hi Alice! I am fine, thanks!', FALSE),
+(1, NULL, 'Welcome to my wall!', TRUE),
+(3, NULL, 'Charlie says hello!', TRUE);
+
+-- CSV-Uploads
+INSERT INTO csv_imports (user_id, file_path, status) VALUES
+(1, '/uploads/mass_transfer_1.csv', 'PENDING'),
+(2, '/uploads/mass_transfer_2.csv', 'VALIDATED'),
+(3, '/uploads/mass_transfer_3.csv', 'FAILED');
+
+-- Audit-Log
+INSERT INTO audit_log (user_id, action) VALUES
+(1, 'Registered new account'),
+(2, 'Transferred 50€ to Alice'),
+(3, 'Posted on the wall: "Charlie says hello!"');
