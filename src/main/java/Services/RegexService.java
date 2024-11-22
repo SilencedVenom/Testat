@@ -15,7 +15,7 @@ public class RegexService {
         if (input == null) {
             return false;
         }
-        return input.matches("^(?=.*\\d)(?=.*[^\\w\\s]).{8,}$");
+        return input.matches("^(?=.*\\d).{8,}$");
     }
 
     //TODO
