@@ -41,9 +41,3 @@ CREATE TABLE audit_log (
 
 ALTER TABLE transactions
 ADD CONSTRAINT positive_amount CHECK (amount > 0);
-
-
-
-
-
-
