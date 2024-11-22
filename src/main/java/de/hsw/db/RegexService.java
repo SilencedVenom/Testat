@@ -6,11 +6,17 @@ public class RegexService {
 
     public RegexService() {}
 
-    public Pattern createPattern(String regex) {
-        return Pattern.compile(regex);
+    public boolean isValidEmail(String input) {
+        if (input == null) {
+            return false;
+        }
+        return input.matches("^[A-Za-z0+9+_.-]+@(.+)$");
     }
 
-    public boolean checkRegex(Pattern pattern, String input) {
-        return pattern.matcher(input).matches();
-    }
+    //TODO
+    public void validateCsv() {}
+
+    public int returnCsvIndex(int index) {return index;}
+
+
 }
