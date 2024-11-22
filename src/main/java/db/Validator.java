@@ -1,4 +1,4 @@
-package de.hsw.db;
+package db;
 
 public class Validator {
     public Validator() {}
