@@ -1,6 +1,4 @@
-package de.hsw.db;
-
-import java.util.regex.Pattern;
+package Services;
 
 public class RegexService {
 
@@ -11,6 +9,13 @@ public class RegexService {
             return false;
         }
         return input.matches("^[A-Za-z0+9+_.-]+@(.+)$");
+    }
+
+    public boolean isValidPassword(String input) {
+        if (input == null) {
+            return false;
+        }
+        return input.matches("^(?=.*\\d).{8,}$");
     }
 
     //TODO
