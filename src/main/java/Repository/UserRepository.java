@@ -13,7 +13,6 @@ public class UserRepository {
      *
      * @param email
      * @return {@link User}
-     * @throws RuntimeException
      */
     public User findUserByEmail(String email) {
         String query = "SELECT * FROM users WHERE email = ?";
@@ -32,7 +31,7 @@ public class UserRepository {
             }
 
         } catch (SQLException e) {
-            new RuntimeException("Es gab ein Fehler beim finden der Email");
+            throw new RuntimeException("Es gab ein Fehler beim finden der Email");
         }
         return null;
     }
@@ -54,7 +53,7 @@ public class UserRepository {
             statement.executeUpdate();
 
         } catch (SQLException e) {
-            new RuntimeException("Es gab ein Fehler beim hinzufügen des Users zur Datenbank");
+            throw new RuntimeException("Es gab ein Fehler beim hinzufügen des Users zur Datenbank");
         }
     }
 }
