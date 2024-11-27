@@ -33,4 +33,10 @@ public class UserService {
         }
     }
 
+    public double showBalance(String email) {
+        User user = userRepository.findUserByEmail(email);
+        return user.getBalance();
+
+    }
+
 }
