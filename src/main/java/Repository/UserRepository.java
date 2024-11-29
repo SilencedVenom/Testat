@@ -56,4 +56,17 @@ public class UserRepository {
             throw new RuntimeException("Es gab ein Fehler beim hinzufügen des Users zur Datenbank");
         }
     }
+
+    public void updateBalance(String email, double balance) {
+        String query = "UPDATE USERS SET BALANCE = ? WHERE EMAIL = ?";
+        try (Connection connection = DatabaseConnection.getInstance().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setDouble(1, balance);
+            statement.setString(2, email);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
