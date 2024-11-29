@@ -37,19 +37,19 @@ public class UserRepository {
     }
 
     /** Fügt einen User der Datenbank hinzu.
-     * @param user {@link User}
+     * @param  {@link User}
      * @throws RuntimeException
      * @throws SQLException
      */
-    public void addUser(User user) {
+    public void addUser(String email, String password, double balance, Timestamp created_at) {
         String query = "INSERT INTO users (email, password, balance, created_at) VALUES (?, ?, ?, ?)";
         try (Connection connection = DatabaseConnection.getInstance().getConnection();
             PreparedStatement statement = connection.prepareStatement(query)) {
 
-            statement.setString(1, user.getEmail());
-            statement.setString(2, user.getPassword());
-            statement.setDouble(3, user.getBalance());
-            statement.setTimestamp(4, new Timestamp(user.getCreatedAt().getTime()));
+            statement.setString(1, email);
+            statement.setString(2, password);
+            statement.setDouble(3, balance);
+            statement.setTimestamp(4, created_at);
             statement.executeUpdate();
 
         } catch (SQLException e) {
