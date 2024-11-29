@@ -60,5 +60,9 @@ public class User {
         }
         return null;
     }
+
+    public void showBalance(User user){
+        System.out.println("Ihr aktueller Kontostand beträgt: " + user.getBalance());
+    }
 }
 
