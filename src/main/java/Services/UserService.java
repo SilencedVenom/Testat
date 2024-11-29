@@ -28,8 +28,7 @@ public class UserService {
         if (checkIfAccountExists(email)) {
             new RuntimeException("Benutzer existiert bereits.");
         } else {
-            User user = new User(-1, email, password, 1000, new Timestamp(System.currentTimeMillis()));
-            userRepository.addUser(user);
+            userRepository.addUser(email, password, 1000, new Timestamp(System.currentTimeMillis()));
         }
     }
 
