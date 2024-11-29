@@ -39,7 +39,6 @@ public class UserRepository {
     /** Fügt einen User der Datenbank hinzu.
      * @param  {@link User}
      * @throws RuntimeException
-     * @throws SQLException
      */
     public void addUser(String email, String password, double balance, Timestamp created_at) {
         String query = "INSERT INTO users (email, password, balance, created_at) VALUES (?, ?, ?, ?)";
