@@ -39,7 +39,6 @@ public class UserRepository {
     /** Fügt einen User der Datenbank hinzu.
      * @param  {@link User}
      * @throws RuntimeException
-     * @throws SQLException
      */
     public void addUser(String email, String password, double balance, Timestamp created_at) {
         String query = "INSERT INTO users (email, password, balance, created_at) VALUES (?, ?, ?, ?)";
@@ -54,6 +53,19 @@ public class UserRepository {
 
         } catch (SQLException e) {
             throw new RuntimeException("Es gab ein Fehler beim hinzufügen des Users zur Datenbank");
+        }
+    }
+
+    public void updateBalance(String email, double balance) {
+        String query = "UPDATE USERS SET BALANCE = ? WHERE EMAIL = ?";
+        try (Connection connection = DatabaseConnection.getInstance().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setDouble(1, balance);
+            statement.setString(2, email);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }
