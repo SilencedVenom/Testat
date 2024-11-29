@@ -2,7 +2,6 @@ package de.hsw;
 
 import Repository.UserRepository;
 import Services.RegexService;
-import Services.UserService;
 import models.User;
 
 import java.sql.Timestamp;
@@ -12,7 +11,7 @@ public class Main {
     public static void main(String[] args) {
         UserRepository userRepository = new UserRepository();
         RegexService regexService = new RegexService();
-        UserService userService = new UserService(regexService);
+
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("""
