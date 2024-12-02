@@ -31,11 +31,10 @@ public class UserRepository {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Es gab ein Fehler beim finden der Email");
+            throw new RuntimeException("Es gab ein Fehler beim Finden der E-Mail", e);
         }
         return null;
     }
-
     public User findUserById(int id) {
         String query = "SELECT * FROM users WHERE id = ?";
         try (Connection connection = DatabaseConnection.getInstance().getConnection();
@@ -62,12 +61,17 @@ public class UserRepository {
 
         /** Fügt einen User der Datenbank hinzu.
      * @param  {@link User}
+    /** Fügt einen User der Datenbank hinzu.
+     * @param email
+     * @param password
+     * @param balance
+     * @param created_at
      * @throws RuntimeException
      */
     public void addUser(String email, String password, double balance, Timestamp created_at) {
         String query = "INSERT INTO users (email, password, balance, created_at) VALUES (?, ?, ?, ?)";
         try (Connection connection = DatabaseConnection.getInstance().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)) {
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, email);
             statement.setString(2, password);
@@ -76,20 +80,29 @@ public class UserRepository {
             statement.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Es gab ein Fehler beim hinzufügen des Users zur Datenbank");
+            throw new RuntimeException("Es gab ein Fehler beim Hinzufügen des Users zur Datenbank", e);
         }
     }
 
+    /** Aktualisiert das Guthaben eines Benutzers.
+     * @param email
+     * @param balance
+     * @throws RuntimeException
+     */
     public void updateBalance(String email, double balance) {
         String query = "UPDATE USERS SET BALANCE = ? WHERE EMAIL = ?";
         try (Connection connection = DatabaseConnection.getInstance().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)) {
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setDouble(1, balance);
             statement.setString(2, email);
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Es gab ein Fehler beim Aktualisieren des Guthabens", e);
         }
+    }
+    public boolean checkIfAccountExists(String email) {
+        User user = findUserByEmail(email);
+        return user != null;
     }
 }
