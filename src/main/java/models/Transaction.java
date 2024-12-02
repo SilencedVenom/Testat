@@ -1,5 +1,6 @@
 package models;
 
+ import java.sql.Date;
 import java.sql.Timestamp;
 
 // Transaction class representing the transactions table
@@ -9,11 +10,20 @@ public class Transaction {
     private int receiverId;
     private double amount;
     private String description;
-    private Timestamp createdAt;
+    private Date createdAt;
 
     // Constructor
-    public Transaction(int id, int senderId, int receiverId, double amount, String description, Timestamp createdAt) {
+    public Transaction(int id, int senderId, int receiverId, double amount, String description, Date createdAt) {
         this.id = id;
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+        this.amount = amount;
+        this.description = description;
+        this.createdAt = createdAt;
+    }
+
+    //Constructor
+    public Transaction(int senderId, int receiverId, double amount, String description, Date createdAt) {
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.amount = amount;
@@ -42,7 +52,7 @@ public class Transaction {
         return description;
     }
 
-    public Timestamp getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 }
