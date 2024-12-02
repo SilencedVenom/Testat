@@ -35,7 +35,32 @@ public class UserRepository {
         }
         return null;
     }
+    public User findUserById(int id) {
+        String query = "SELECT * FROM users WHERE id = ?";
+        try (Connection connection = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return new User(resultSet.getInt("id"),
+                        resultSet.getString("email"),
+                        resultSet.getString("password"),
+                        resultSet.getDouble("balance"),
+                        resultSet.getTimestamp("created_at"));
+
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Es gab ein Fehler beim finden der Id" + e);
+        }
+        return null;
+    }
+
+
+        /** Fügt einen User der Datenbank hinzu.
+     * @param  {@link User}
     /** Fügt einen User der Datenbank hinzu.
      * @param email
      * @param password
