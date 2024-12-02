@@ -42,5 +42,18 @@ public class TransactionService {
 
     }
 
+    public void withdrawMoney(double balance) {
+        if (balance > user.getBalance()) {
+            throw new BalanceExceededException("Die zu überweisende Geldsumme übersteigt deinen Kontostand.");
+        } else {
+            if (balance >= 0) {
+                user.setBalance(user.getBalance() - balance);
+                System.out.println("Sie haben " + balance + "€ abgehoben.");
+            } else{
+                System.out.println("Sie können keine negativen Abbuchungen durchführen");
+            }
+        }
+    }
+
 
 }
