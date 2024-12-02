@@ -1,4 +1,4 @@
-package de.hsw.db;
+package db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,7 +13,7 @@ public class DatabaseConnection {
 
     private void init() throws SQLException {
         //TODO Die Werte müssen noch angepasst werden
-        final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
+        final String DB_URL = "jdbc:postgresql://localhost:5433/socialmedia_testat";
         final String USER = "postgres";
         final String PASS = "postgres";
 
