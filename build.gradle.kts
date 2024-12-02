@@ -6,10 +6,7 @@ plugins {
 group = "de.hsw"
 version = "1.0-SNAPSHOT"
 
-java {
-    withSourcesJar()
-    withJavadocJar()
-}
+java {}
 
 publishing {
     repositories {
