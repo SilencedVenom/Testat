@@ -32,9 +32,17 @@ public class CSVService {
             String line;
             while ((line = br.readLine()) != null) {
                 if (csvSinglePattern.matcher(line).matches()) {
-                    singlePattern(transactions, line);
+                    try {
+                        singlePattern(transactions, line);
+                    } catch (UserNotFoundException | IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
+                    }
                 } else if (csvMultiPattern.matcher(line).matches()) {
-                    multiPattern(transactions, line);
+                    try {
+                        multiPattern(transactions, line);
+                    } catch (UserNotFoundException | IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
             }
         } catch (IOException e) {
