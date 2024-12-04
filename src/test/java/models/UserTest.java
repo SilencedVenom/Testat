@@ -1,10 +1,14 @@
 package models;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import de.hsw.Main;
 import Repository.UserRepository;
+import db.DatabaseConnection;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,11 +17,21 @@ class UserTest {
 
     private User user;
     private UserRepository userRepository;
+    private Connection connection;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws SQLException{
+        connection = DatabaseConnection.getInstance().getConnection();
+        connection.setAutoCommit(false); //
         user = new User(1, "testuser@uni.de", "password123", 1000.00, new Timestamp(System.currentTimeMillis()));
         userRepository = new UserRepository();
+    }
+    @AfterEach
+    void tearDown() throws SQLException {
+        if (connection != null && !connection.isClosed()) {
+            connection.rollback(); // Roll back any changes made during the test
+            connection.setAutoCommit(true); // Restore auto-commit mode
+        }
     }
 
     @Test
