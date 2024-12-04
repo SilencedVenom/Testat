@@ -65,5 +65,25 @@ public class TransactionService {
 
         transactionRepository.sendTransaction(transactions);
 
+    public void withdrawMoney(double balance) {
+        if (balance > user.getBalance()) {
+            throw new BalanceExceededException("Die zu überweisende Geldsumme übersteigt deinen Kontostand.");
+        } else {
+            if (balance >= 0) {
+                user.setBalance(user.getBalance() - balance);
+                System.out.println("Sie haben " + balance + "€ abgehoben.");
+            } else{
+                System.out.println("Sie können keine negativen Abbuchungen durchführen");
+            }
+        }
+    }
+
+    public void transactionToUserCSV(String fileName) {
+        List<Transaction> transactions = csvService.readCSV(fileName);
+        User receiver = userRepository.findUserById(transactions.get(0).getReceiverId());
+        double balance = transactions.get(0).getAmount();
+        transactionToUser(receiver.getEmail(), balance);
+        //2. Send Transaction
+
     }
 }

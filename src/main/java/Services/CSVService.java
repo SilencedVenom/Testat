@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-
 public class CSVService {
 
     private static final Pattern csvSinglePattern = Pattern.compile("^\\d{4}-\\d{2}-\\d{2};[^;]+;[^;]+;[^;]+;\\d+\\.\\d{2}$");
@@ -86,6 +85,5 @@ public class CSVService {
         int senderId = user.getId();
 
         transactions.add(new Transaction(senderId, receiverUser.getId(), amount, description, new Date(System.currentTimeMillis())));
-
     }
 }
