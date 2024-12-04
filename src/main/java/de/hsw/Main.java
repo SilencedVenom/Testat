@@ -1,7 +1,12 @@
 package de.hsw;
 
+import Exceptions.BalanceExceededException;
+import Exceptions.NegativeTransactionException;
+import Exceptions.UserNotFoundException;
 import Repository.UserRepository;
+import Services.CSVService;
 import Services.RegexService;
+import Services.TransactionService;
 import Services.UserService;
 import models.User;
 
@@ -11,11 +16,11 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         System.out.println("Aktuelles Arbeitsverzeichnis: " + System.getProperty("user.dir"));
+      
 /*
         CSVService csvService = new CSVService();
         csvService.readCSV("test");
 */
-
 
         Scanner scanner = new Scanner(System.in);
 
@@ -58,7 +63,6 @@ public class Main {
             }
         }
         scanner.close();
-
 
     }
     public static boolean login(String email, String password) {
