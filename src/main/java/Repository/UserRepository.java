@@ -36,11 +36,11 @@ public class UserRepository {
         return null;
     }
 
-    /** Fügt einen User der Datenbank hinzu.
-     * @param email
-     * @param password
-     * @param balance
-     * @param created_at
+    // Fügt einen User der Datenbank hinzu.
+      //@param email
+      //@param password
+      //@param balance
+      //@param created_at
     public User findUserById(int id) {
         String query = "SELECT * FROM users WHERE id = ?";
         try (Connection connection = DatabaseConnection.getInstance().getConnection();

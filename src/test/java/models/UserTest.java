@@ -2,6 +2,8 @@ package models;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import de.hsw.Main;
+import Repository.UserRepository;
 
 import java.sql.Timestamp;
 
@@ -10,10 +12,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserTest {
 
     private User user;
+    private UserRepository userRepository;
 
     @BeforeEach
     void setUp() {
         user = new User(1, "testuser@uni.de", "password123", 1000.00, new Timestamp(System.currentTimeMillis()));
+        userRepository = new UserRepository();
     }
 
     @Test
@@ -54,5 +58,41 @@ class UserTest {
 
         inputPassword = "wrongpassword";
         assertFalse(user.getPassword().equals(inputPassword), "Login should fail with incorrect password");
+    }
+
+    @Test
+    void testRegisterNewUser() {
+        // Register a new user
+        boolean result = Main.register("newuser@uni.de", "Password123");
+        assertTrue(result, "Registration should be successful");
+
+        // Verify that the user is in the repository
+        User user = userRepository.findUserByEmail("newuser@uni.de");
+        assertNotNull(user, "User should be found after successful registration");
+        assertEquals("newuser@uni.de", user.getEmail(), "Email should match the registered email");
+    }
+
+    @Test
+    void testRegisterExistingUser() {
+        // Register a user for the first time
+        Main.register("existinguser@uni.de", "Password123");
+
+        // Try to register the same user again
+        boolean result = Main.register("existinguser@uni.de", "Password123");
+        assertFalse(result, "Registration should fail for an existing user");
+    }
+
+    @Test
+    void testRegisterInvalidEmail() {
+        // Attempt to register with an invalid email
+        boolean result = Main.register("invalid-email", "Password123");
+        assertFalse(result, "Registration should fail for an invalid email");
+    }
+
+    @Test
+    void testRegisterInvalidPassword() {
+        // Attempt to register with an invalid password
+        boolean result = Main.register("validemail@uni.de", "pass");
+        assertFalse(result, "Registration should fail for an invalid password");
     }
 }
