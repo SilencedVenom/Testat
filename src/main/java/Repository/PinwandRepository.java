@@ -52,4 +52,6 @@ public class PinwandRepository {
 
         return beitraege;
     }
+
+
 }

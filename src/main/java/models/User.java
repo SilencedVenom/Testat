@@ -1,16 +1,18 @@
 package models;
 
+import Repository.PinwandRepository;
 import Repository.UserRepository;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 // User class representing the users table
 public class User {
-    private int id;
-    private String email;
-    private String password;
+    private final int id;
+    private final String email;
+    private final String password;
+    private final Timestamp createdAt;
     private double balance;
-    private Timestamp createdAt;
 
     // Constructor
     public User(int id, String email, String password, double balance, Timestamp createdAt) {
@@ -45,6 +47,7 @@ public class User {
     public Timestamp getCreatedAt() {
         return createdAt;
     }
+
     public User login(String email, String password) {
         UserRepository userRepository = new UserRepository();
         User user = userRepository.findUserByEmail(email);
@@ -61,8 +64,16 @@ public class User {
         return null;
     }
 
-    public void showBalance(User user){
+    public void showBalance(User user) {
         System.out.println("Ihr aktueller Kontostand: " + user.getBalance());
+    }
+
+    public void showMyPinboard() {
+        PinwandRepository pinwandRepository = new PinwandRepository();
+        List<PinwandBeitrag> list = pinwandRepository.getBeitraege(this.email);
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println("\n" + "###\nVerfasser: " + list.get(i).getVerfasser() + "\n" + list.get(i).getBeitrag() + "\n" + list.get(i).getTimestamp() + "\n###");
+        }
     }
 }
 

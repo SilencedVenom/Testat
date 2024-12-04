@@ -2,7 +2,8 @@ package de.hsw;
 
 import Repository.UserRepository;
 import Services.RegexService;
-import Services.UserService;
+import models.User;
+
 import java.sql.Timestamp;
 import java.util.Scanner;
 
