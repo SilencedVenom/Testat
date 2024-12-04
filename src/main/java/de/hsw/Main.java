@@ -61,7 +61,19 @@ public class Main {
             }
 
             case 1 -> {
+                System.out.println("Email:");
+                String email = scanner.nextLine();
+                System.out.println("Passwort:");
+                String password = scanner.nextLine();
 
+                User user = userRepository.findUserByEmail(email);
+                if (user != null && user.getPassword().equals(password)) {
+                    System.out.println("Login erfolgreich. Willkommen " + user.getEmail());
+                } else if (user == null) {
+                    System.out.println("Benutzer nicht gefunden.");
+                } else {
+                    System.out.println("Falsches Passwort.");
+                }
             }
 
             default -> {
