@@ -27,7 +27,6 @@ public class TransactionRepository {
                 statement.setDate(5, new Date(System.currentTimeMillis()));
                 statement.executeUpdate();
             }
-
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
