@@ -3,6 +3,7 @@ package Services;
 import Exceptions.BalanceExceededException;
 import Exceptions.NegativeTransactionException;
 import Exceptions.UserNotFoundException;
+import Repository.TransactionRepository;
 import Repository.UserRepository;
 import models.Transaction;
 import models.User;
@@ -12,15 +13,17 @@ import java.util.List;
 public class TransactionService {
     private final RegexService regexService;
     private final UserRepository userRepository;
+    private final TransactionRepository transactionRepository;
     private final CSVService csvService;
-    private User user;
+    private final User user;
 
 
-    public TransactionService(RegexService regexService, User user, UserRepository userRepository, CSVService csvService) {
-        this.regexService = regexService;
+    public TransactionService(User user) {
+        this.regexService = new RegexService();
         this.user = user;
-        this.userRepository = userRepository;
-        this.csvService = csvService;
+        this.userRepository = new UserRepository();
+        this.csvService = new CSVService(user);
+        this.transactionRepository = new TransactionRepository();
     }
 
     public void transactionToUser(String email, double balance) {
@@ -50,14 +53,37 @@ public class TransactionService {
 
     public void transactionToUserCSV(String fileName) {
         List<Transaction> transactions = csvService.readCSV(fileName);
+
+        for (Transaction transaction : transactions) {
+            User receiver = userRepository.findUserById(transaction.getReceiverId());
+            if (receiver == null) {
+                throw new UserNotFoundException("Empfänger nicht gefunden");
+            }
+            double balance = transaction.getAmount();
+            transactionToUser(receiver.getEmail(), balance);
+        }
+
+        transactionRepository.sendTransaction(transactions);
+
+    public void withdrawMoney(double balance) {
+        if (balance > user.getBalance()) {
+            throw new BalanceExceededException("Die zu überweisende Geldsumme übersteigt deinen Kontostand.");
+        } else {
+            if (balance >= 0) {
+                user.setBalance(user.getBalance() - balance);
+                System.out.println("Sie haben " + balance + "€ abgehoben.");
+            } else{
+                System.out.println("Sie können keine negativen Abbuchungen durchführen");
+            }
+        }
+    }
+
+    public void transactionToUserCSV(String fileName) {
+        List<Transaction> transactions = csvService.readCSV(fileName);
         User receiver = userRepository.findUserById(transactions.get(0).getReceiverId());
         double balance = transactions.get(0).getAmount();
         transactionToUser(receiver.getEmail(), balance);
         //2. Send Transaction
 
-
     }
-
-
-
 }
