@@ -7,11 +7,9 @@ import java.sql.*;
 
 public class UserRepository {
 
-    public UserRepository() {
-    }
+    public UserRepository() {}
 
-    /**
-     * Findet einen User anhand seiner E-Mail.
+    /** Findet einen User anhand seiner E-Mail.
      *
      * @param email
      * @return {@link User}
@@ -33,16 +31,11 @@ public class UserRepository {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Es gab ein Fehler beim Finden der E-Mail", e);
+            throw new RuntimeException("Es gab ein Fehler beim finden der Email");
         }
         return null;
     }
 
-    // Fügt einen User der Datenbank hinzu.
-    //@param email
-    //@param password
-    //@param balance
-    //@param created_at
     public User findUserById(int id) {
         String query = "SELECT * FROM users WHERE id = ?";
         try (Connection connection = DatabaseConnection.getInstance().getConnection();
@@ -67,16 +60,14 @@ public class UserRepository {
     }
 
 
-    /**
-     * Fügt einen User der Datenbank hinzu.
-     *
-     * @param {@link User}
+        /** Fügt einen User der Datenbank hinzu.
+     * @param  {@link User}
      * @throws RuntimeException
      */
     public void addUser(String email, String password, double balance, Timestamp created_at) {
         String query = "INSERT INTO users (email, password, balance, created_at) VALUES (?, ?, ?, ?)";
         try (Connection connection = DatabaseConnection.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+            PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, email);
             statement.setString(2, password);
@@ -85,70 +76,20 @@ public class UserRepository {
             statement.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Es gab ein Fehler beim Hinzufügen des Users zur Datenbank", e);
+            throw new RuntimeException("Es gab ein Fehler beim hinzufügen des Users zur Datenbank");
         }
     }
 
-    /**
-     * Aktualisiert das Guthaben eines Benutzers.
-     *
-     * @param email
-     * @param balance
-     * @throws RuntimeException
-     */
     public void updateBalance(String email, double balance) {
         String query = "UPDATE USERS SET BALANCE = ? WHERE EMAIL = ?";
         try (Connection connection = DatabaseConnection.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+            PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setDouble(1, balance);
             statement.setString(2, email);
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Es gab ein Fehler beim Aktualisieren des Guthabens", e);
-        }
-    }
-
-    public void deleteUserByEmail(String email) {
-        String query = "DELETE FROM users WHERE email = ?";
-        try (Connection connection = DatabaseConnection.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-
-            statement.setString(1, email);
-            statement.executeUpdate();
-
-        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
-
-    public boolean checkIfAccountExists(String email) {
-        User user = findUserByEmail(email);
-        return user != null;
-    }
-
-    public void showMyMessages(String emailMessage) {
-        String queryMessage = "SELECT email_verfasser, nachricht FROM direktnachrichten WHERE ? IN(email_erhalter, email_verfasser) ORDER BY timestamp DESC";
-
-        try (Connection connection = DatabaseConnection.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(queryMessage)) {
-
-
-            statement.setString(1, emailMessage);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-
-                while (resultSet.next()) {
-                    String sender = resultSet.getString("email_verfasser");
-                    String message = resultSet.getString("nachricht");
-                    System.out.println("Von: " + sender + " | Nachricht: " + message);
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Fehler beim Abrufen der Nachrichten", e);
-        }
-    }
-
-
 }
