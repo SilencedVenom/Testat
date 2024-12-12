@@ -148,6 +148,7 @@ public class UserRepository {
         } catch (SQLException e) {
             throw new RuntimeException("Fehler beim Abrufen der Nachrichten", e);
         }
+
     }
 
 
