@@ -6,7 +6,8 @@ import models.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TransactionServiceTest {
 
@@ -16,7 +17,7 @@ class TransactionServiceTest {
     @BeforeEach
     void setUp() {
         user = new User(1, "test@example.com", "password", 1000.0, null); // Beispielwerte
-        transactionService = new TransactionService(new RegexService(),user, new UserRepository(),new CSVService());
+        transactionService = new TransactionService(new RegexService(), user, new UserRepository(), new CSVService());
     }
 
     @Test
