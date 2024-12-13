@@ -5,9 +5,7 @@ import Repository.UserRepository;
 import models.Transaction;
 import models.User;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,5 +91,31 @@ public class CSVService {
         int senderId = user.getId();
 
         transactions.add(new Transaction(senderId, receiverUser.getId(), amount, description, new Date(System.currentTimeMillis())));
+    }
+
+    public void writeCSVTransactions(String fileName, List<Transaction> transactions) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+
+            User sender = userRepository.findUserById(transactions.get(0).getSenderId());
+            for (Transaction item : transactions) {
+                User receiver = userRepository.findUserById(item.getReceiverId());
+
+                String[] row = {
+                        item.getCreatedAt().toString(),
+                        receiver.getEmail(),
+                        sender.getEmail(),
+                        item.getDescription(),
+                        String.valueOf(item.getAmount()),
+                };
+
+                writer.write(String.join(",", row));
+                writer.newLine();
+            }
+
+            System.out.println("CSV wurde erfolgreich geschrieben.");
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

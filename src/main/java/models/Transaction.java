@@ -1,16 +1,15 @@
 package models;
 
- import java.sql.Date;
-import java.sql.Timestamp;
+import java.sql.Date;
 
 // Transaction class representing the transactions table
 public class Transaction {
+    private final int senderId;
+    private final int receiverId;
+    private final double amount;
+    private final String description;
+    private final Date createdAt;
     private int id;
-    private int senderId;
-    private int receiverId;
-    private double amount;
-    private String description;
-    private Date createdAt;
 
     // Constructor
     public Transaction(int id, int senderId, int receiverId, double amount, String description, Date createdAt) {
