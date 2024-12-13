@@ -151,5 +151,29 @@ public class UserRepository {
 
     }
 
+    public void printLastTenTransactions(int senderId) {
+        String query = "SELECT amount, created_at, description FROM transactions WHERE sender_id = ? ORDER BY created_at DESC LIMIT 10";
+
+        try (Connection connection = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, senderId);
+            ResultSet resultSet = statement.executeQuery();
+
+            System.out.println("Letzte 10 Transaktionen:");
+
+            while (resultSet.next()) {
+                double amount = resultSet.getDouble("amount");
+                Timestamp createdAt = resultSet.getTimestamp("created_at");
+                String description = resultSet.getString("description");
+
+                System.out.printf("Betrag: %.2f, Datum: %s, Beschreibung: %s%n",
+                        amount, createdAt, description);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Fehler beim Abrufen der Transaktionen: " + e.getMessage(), e);
+        }
+    }
 
 }
