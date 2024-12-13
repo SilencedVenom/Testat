@@ -2,6 +2,7 @@ package Services;
 
 import Exceptions.BalanceExceededException;
 import Exceptions.NegativeTransactionException;
+import Exceptions.TransactionsNotFoundException;
 import Exceptions.UserNotFoundException;
 import Repository.TransactionRepository;
 import Repository.UserRepository;
@@ -52,18 +53,24 @@ public class TransactionService {
     }
 
     public void transactionToUserCSV(String fileName) {
-        List<Transaction> transactions = csvService.readCSV(fileName);
+        if (regexService.isValidFilename(fileName)) {
+            List<Transaction> transactions = csvService.readCSV(fileName);
 
-        for (Transaction transaction : transactions) {
-            User receiver = userRepository.findUserById(transaction.getReceiverId());
-            if (receiver == null) {
-                throw new UserNotFoundException("Empfänger nicht gefunden");
+
+            for (Transaction transaction : transactions) {
+                User receiver = userRepository.findUserById(transaction.getReceiverId());
+                if (receiver == null) {
+                    throw new UserNotFoundException("Empfänger nicht gefunden");
+                }
+                double balance = transaction.getAmount();
+                transactionToUser(receiver.getEmail(), balance);
             }
-            double balance = transaction.getAmount();
-            transactionToUser(receiver.getEmail(), balance);
-        }
 
-        transactionRepository.sendTransaction(transactions);
+            transactionRepository.sendTransaction(transactions);
+        } else {
+            throw new IllegalArgumentException("Der Filename ist ist nicht gültig.");
+        }
+    }
 
     public void withdrawMoney(double balance) {
         if (balance > user.getBalance()) {
@@ -72,18 +79,21 @@ public class TransactionService {
             if (balance >= 0) {
                 user.setBalance(user.getBalance() - balance);
                 System.out.println("Sie haben " + balance + "€ abgehoben.");
-            } else{
+            } else {
                 System.out.println("Sie können keine negativen Abbuchungen durchführen");
             }
         }
     }
 
-    public void transactionToUserCSV(String fileName) {
-        List<Transaction> transactions = csvService.readCSV(fileName);
-        User receiver = userRepository.findUserById(transactions.get(0).getReceiverId());
-        double balance = transactions.get(0).getAmount();
-        transactionToUser(receiver.getEmail(), balance);
-        //2. Send Transaction
-
+    public void writeTransactions(String fileName) {
+        List<Transaction> transactions = transactionRepository.getTransactionsBySenderId(user.getId());
+        if (transactions.isEmpty()) {
+            throw new TransactionsNotFoundException("Es sind keine Transaktionen vorhanden.");
+        }
+        if (regexService.isValidFilename(fileName)) {
+            csvService.writeCSVTransactions(fileName, transactions);
+        } else {
+            throw new IllegalArgumentException("Der Filename ist ist nicht gültig.");
+        }
     }
 }

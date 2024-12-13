@@ -3,10 +3,8 @@ package Repository;
 import db.DatabaseConnection;
 import models.Transaction;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionRepository {
@@ -30,5 +28,34 @@ public class TransactionRepository {
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    public List<Transaction> getTransactionsBySenderId(int senderId) {
+        String query = "Select * from transactions where sender_id = ?";
+        try (Connection connection = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, senderId);
+            List<Transaction> transactions = new ArrayList<>();
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Transaction item = new Transaction(
+                            resultSet.getInt("id"),
+                            resultSet.getInt("sender_id"),
+                            resultSet.getInt("receiver_id"),
+                            resultSet.getDouble("amount"),
+                            resultSet.getString("description"),
+                            resultSet.getDate("created_at")
+                    );
+                    transactions.add(item);
+                }
+            }
+            return transactions;
+
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+
+        }
+
     }
 }
