@@ -145,7 +145,7 @@ public class UserRepository {
     /**
      * Zeigt die Nachricht anhand der Nachricht an.
      *
-     * @param emailMessage
+     * @param emailMessage Nachricht
      */
     public void showMyMessages(String emailMessage) {
         String queryMessage = "SELECT email_verfasser, nachricht FROM direktnachrichten WHERE ? IN(email_erhalter, email_verfasser) ORDER BY timestamp DESC";
