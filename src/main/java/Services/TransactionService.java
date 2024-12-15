@@ -27,6 +27,10 @@ public class TransactionService {
         this.transactionRepository = new TransactionRepository();
     }
 
+    /**
+     * @param email   Email vom User
+     * @param balance zu übertragender Betrag
+     */
     public void transactionToUser(String email, double balance) {
         if (balance > user.getBalance()) {
             throw new BalanceExceededException("Die zu überweisende Geldsumme übersteigt deinen Kontostand.");

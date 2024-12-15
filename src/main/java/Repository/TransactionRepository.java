@@ -12,6 +12,12 @@ public class TransactionRepository {
     public TransactionRepository() {
     }
 
+    /**
+     * Sendet alle Transaktionen der Liste zur DB.
+     *
+     * @param transactions Liste mit Transaktionen
+     * @throws RuntimeException bei DB Fehlern
+     */
     public void sendTransaction(List<Transaction> transactions) {
         String query = "Insert INTO transactions (sender_id, receiver_id, amount, description, created_at) values(?,?,?,?,?)";
         try (Connection connection = DatabaseConnection.getInstance().getConnection();
@@ -30,6 +36,13 @@ public class TransactionRepository {
         }
     }
 
+    /**
+     * Läd alle Transaktionen von einer UserID.
+     *
+     * @param senderId UserID
+     * @return List<Transaction> Liste von Transaktionen
+     * @throws RuntimeException bei DB Fehlern
+     */
     public List<Transaction> getTransactionsBySenderId(int senderId) {
         String query = "Select * from transactions where sender_id = ?";
         try (Connection connection = DatabaseConnection.getInstance().getConnection();

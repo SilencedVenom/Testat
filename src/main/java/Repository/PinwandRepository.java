@@ -9,6 +9,14 @@ import java.util.List;
 
 public class PinwandRepository {
 
+    /**
+     * Fügt einen Beitrag der Pinnwand hinzu.
+     *
+     * @param email     vom Verfasser
+     * @param beitrag   Nachricht des Beitrags
+     * @param verfasser Verfasser des Beitrags
+     * @throws RuntimeException bei DB Fehlern
+     */
     public void addBeitrag(String email, String beitrag, String verfasser) {
         String query = "INSERT INTO pinwand (email, beitrag, timestamp, verfasser) VALUES (?, ?, ?, ?)";
         try (Connection connection = DatabaseConnection.getInstance().getConnection();
@@ -25,6 +33,13 @@ public class PinwandRepository {
         }
     }
 
+    /**
+     * Läd alle Beiträge vom User.
+     *
+     * @param email Email vom User
+     * @return List<PinwandBeitrag> enthält alle Beiträge vom User
+     * @throws RuntimeException bei DB Fehlern
+     */
     public List<PinwandBeitrag> getBeitraege(String email) {
         String query = "SELECT * FROM pinwand WHERE email = ? ORDER BY timestamp DESC";
         List<PinwandBeitrag> beitraege = new ArrayList<>();

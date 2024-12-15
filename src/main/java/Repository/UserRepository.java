@@ -11,9 +11,9 @@ public class UserRepository {
     }
 
     /**
-     * Findet einen User anhand seiner E-Mail.
+     * Läd einen User anhand seiner E-Mail.
      *
-     * @param email
+     * @param email Email des Users
      * @return {@link User}
      */
     public User findUserByEmail(String email) {
@@ -38,11 +38,13 @@ public class UserRepository {
         return null;
     }
 
-    // Fügt einen User der Datenbank hinzu.
-    //@param email
-    //@param password
-    //@param balance
-    //@param created_at
+    /**
+     * Läd einen User anhand seiner ID.
+     *
+     * @param id UserID
+     * @return {@link User}
+     * @throws RuntimeException bei DB Fehlern
+     */
     public User findUserById(int id) {
         String query = "SELECT * FROM users WHERE id = ?";
         try (Connection connection = DatabaseConnection.getInstance().getConnection();
@@ -66,12 +68,14 @@ public class UserRepository {
         return null;
     }
 
-
     /**
-     * Fügt einen User der Datenbank hinzu.
+     * Fügt einen User der DB hinzu.
      *
-     * @param {@link User}
-     * @throws RuntimeException
+     * @param email      Email
+     * @param password   Passwort
+     * @param balance    Geldbetrag
+     * @param created_at Zeitpunkt
+     * @throws RuntimeException bei DB Fehlern
      */
     public void addUser(String email, String password, double balance, Timestamp created_at) {
         String query = "INSERT INTO users (email, password, balance, created_at) VALUES (?, ?, ?, ?)";
@@ -90,11 +94,11 @@ public class UserRepository {
     }
 
     /**
-     * Aktualisiert das Guthaben eines Benutzers.
+     * Aktualisiert das Guthaben eines Users.
      *
-     * @param email
-     * @param balance
-     * @throws RuntimeException
+     * @param email   Email
+     * @param balance Geldbetrag
+     * @throws RuntimeException bei DB Fehlern
      */
     public void updateBalance(String email, double balance) {
         String query = "UPDATE USERS SET BALANCE = ? WHERE EMAIL = ?";
@@ -109,6 +113,11 @@ public class UserRepository {
         }
     }
 
+    /**
+     * Löscht einen User anhand der Email.
+     *
+     * @param email Email
+     */
     public void deleteUserByEmail(String email) {
         String query = "DELETE FROM users WHERE email = ?";
         try (Connection connection = DatabaseConnection.getInstance().getConnection();
@@ -122,11 +131,22 @@ public class UserRepository {
         }
     }
 
+    /**
+     * Überprüft, ob der User existiert.
+     *
+     * @param email Email
+     * @return {@code true} wenn der User existiert
+     */
     public boolean checkIfAccountExists(String email) {
         User user = findUserByEmail(email);
         return user != null;
     }
 
+    /**
+     * Zeigt die Nachricht anhand der Nachricht an.
+     *
+     * @param emailMessage Nachricht
+     */
     public void showMyMessages(String emailMessage) {
         String queryMessage = "SELECT email_verfasser, nachricht FROM direktnachrichten WHERE ? IN(email_erhalter, email_verfasser) ORDER BY timestamp DESC";
 
