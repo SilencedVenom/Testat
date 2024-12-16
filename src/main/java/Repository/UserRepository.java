@@ -102,6 +102,7 @@ public class UserRepository {
             throw new RuntimeException("Es gab ein Fehler beim Aktualisieren des Guthabens", e);
         }
     }
+
     public void deleteUserByEmail(String email) {
         String query = "DELETE FROM users WHERE email = ?";
         try (Connection connection = DatabaseConnection.getInstance().getConnection();
@@ -112,8 +113,11 @@ public class UserRepository {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }
-    public boolean checkIfAccountExists(String email) {
+    }
+
+
+}
+    public boolean checkIfAccountExists (String email){
         User user = findUserByEmail(email);
         return user != null;
     }
