@@ -1,7 +1,11 @@
 package Services;
 
 import Exceptions.UserNotFoundException;
+import Repository.MessageRepository;
+import Repository.PinwandRepository;
 import Repository.UserRepository;
+import models.Message;
+import models.PinwandBeitrag;
 import models.Transaction;
 import models.User;
 
@@ -116,6 +120,54 @@ public class CSVService {
 
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+    public void exportMessagesAndPinwand(String contactEmail, String fileName) {
+        String filePath = "./CSV/" + fileName + ".csv";
+        MessageRepository messageRepository = new MessageRepository();
+        PinwandRepository pinwandRepository = new PinwandRepository();
+
+        // Kontakt validieren
+        User contactUser = userRepository.findUserByEmail(contactEmail);
+        if (contactUser == null) {
+            throw new UserNotFoundException("Der Benutzer mit der E-Mail " + contactEmail + " wurde nicht gefunden.");
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            // Header schreiben
+            writer.write("Zeitpunkt der Nachricht;Sender;Empfänger;Nachricht");
+            writer.newLine();
+
+            // 1. Direktnachrichten abrufen und schreiben
+            List<Message> directMessages = messageRepository.getDirectMessages(user.getId(), contactUser.getId());
+            for (Message message : directMessages) {
+                String row = String.join(";",
+                        message.getCreatedAt().toString(),
+                        userRepository.findUserById(message.getSenderId()).getEmail(), // Sender
+                        userRepository.findUserById(message.getReceiverId()).getEmail(), // Empfänger
+                        message.getMessage()
+                );
+                writer.write(row);
+                writer.newLine();
+            }
+
+            // 2. Pinnwandbeiträge abrufen und schreiben
+            List<PinwandBeitrag> pinwandBeitraege = pinwandRepository.getBeitraegeByVerfasser(contactEmail, user.getEmail());
+            for (PinwandBeitrag beitrag : pinwandBeitraege) {
+                String row = String.join(";",
+                        beitrag.getTimestamp().toString(),
+                        beitrag.getVerfasser(), // Verfasser
+                        beitrag.getEmail(), // Pinnwand-Empfänger
+                        beitrag.getBeitrag() // Nachricht
+                );
+                writer.write(row);
+                writer.newLine();
+            }
+
+            System.out.println("Nachrichten und Pinnwandbeiträge wurden erfolgreich exportiert: " + filePath);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Fehler beim Schreiben der CSV-Datei", e);
         }
     }
 }
