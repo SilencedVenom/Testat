@@ -67,4 +67,39 @@ public class PinwandRepository {
 
         return beitraege;
     }
+    /**
+     * Holt alle Beiträge, die der aktuelle Benutzer auf die Pinnwand eines Kontakts geschrieben hat.
+     * @param contactEmail Die E-Mail-Adresse des Kontakts
+     * @param verfasserEmail Die E-Mail-Adresse des aktuellen Benutzers (Verfasser)
+     * @return Liste der Pinnwandbeiträge
+     */
+    public List<PinwandBeitrag> getBeitraegeByVerfasser(String contactEmail, String verfasserEmail) {
+        String query = "SELECT * FROM pinwand WHERE email = ? AND verfasser = ? ORDER BY timestamp DESC";
+        List<PinwandBeitrag> beitraege = new ArrayList<>();
+
+        try (Connection connection = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, contactEmail);
+            statement.setString(2, verfasserEmail);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                PinwandBeitrag beitrag = new PinwandBeitrag(
+                        resultSet.getInt("id"),
+                        resultSet.getString("email"),
+                        resultSet.getString("beitrag"),
+                        resultSet.getTimestamp("timestamp"),
+                        resultSet.getString("verfasser")
+                );
+                beitraege.add(beitrag);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Fehler beim Abrufen der Pinnwandbeiträge des Verfassers", e);
+        }
+
+        return beitraege;
+    }
+
 }

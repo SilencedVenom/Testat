@@ -1,9 +1,11 @@
 package Repository;
 
 import db.DatabaseConnection;
+import models.Message;
 import models.User;
 
 import java.sql.*;
+import java.util.List;
 
 public class UserRepository {
 
@@ -168,6 +170,8 @@ public class UserRepository {
         }
 
     }
+
+
 
     public void printLastTenTransactions(int senderId) {
         String query = "SELECT amount, created_at, description FROM transactions WHERE sender_id = ? ORDER BY created_at DESC LIMIT 10";

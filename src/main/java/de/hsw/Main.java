@@ -1,6 +1,8 @@
 package de.hsw;
 
+import Exceptions.UserNotFoundException;
 import Repository.UserRepository;
+import Services.CSVService;
 import Services.RegexService;
 import models.User;
 
@@ -103,6 +105,24 @@ public class Main {
                                 System.out.println("Benutzer mit dieser E-Mail-Adresse wurde nicht gefunden.");
                             }
                         }
+                        case 11 -> {
+                            System.out.println("Geben Sie die E-Mail-Adresse des Kontakts ein:");
+                            String contactEmail = scanner.nextLine();
+                            System.out.println("Geben Sie den Dateinamen für den Export ein (ohne Erweiterung):");
+                            String fileName = scanner.nextLine();
+
+                            // CSVService-Instanz erstellen
+                            CSVService csvService = new CSVService(currentUser);
+
+                            try {
+                                // Kombinierten Export durchführen
+                                csvService.exportMessagesAndPinwand(contactEmail, fileName);
+                                System.out.println("Export erfolgreich! Datei gespeichert als: ./CSV/" + fileName + ".csv");
+                            } catch (UserNotFoundException e) {
+                                System.out.println(e.getMessage());
+                            }
+                        }
+
                         case 0 -> {
                             // Programm beenden
                             System.out.println("Programm wird beendet. Auf Wiedersehen!");
