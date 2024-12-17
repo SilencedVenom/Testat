@@ -7,11 +7,9 @@ import java.sql.*;
 
 public class UserRepository {
 
-    public UserRepository() {
-    }
+    public UserRepository() {}
 
-    /**
-     * Läd einen User anhand seiner E-Mail.
+    /** Findet einen User anhand seiner E-Mail.
      *
      * @param email Email des Users
      * @return {@link User}
