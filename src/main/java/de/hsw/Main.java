@@ -3,6 +3,7 @@ package de.hsw;
 import Exceptions.UserNotFoundException;
 import Repository.UserRepository;
 import Services.CSVService;
+import Services.PinwandService;
 import Services.RegexService;
 import Services.TransactionService;
 import models.User;
@@ -64,13 +65,14 @@ public class Main {
                             3. Guthaben einsehen
                             4.
                             5.
-                            6.
-                            7.
+                            6. Geld abheben
+                            7. Pinwand Beitrag erstellen
                             8. Einsicht in meine Pinwand
-                            9.
+                            9. Benutzer suchen, Pinnwand anzeigen oder Nachricht senden
                             10.
                             11. Direktnachrichten oder Pinwand Exportieren
                             12.
+                            13.
                             
                             """);
                     int choice = scanner.nextInt();
@@ -105,6 +107,25 @@ public class Main {
                         }
                         case 7 -> {
                             System.out.println("Use Case 7 ausgewählt.");
+                            boolean inputCorrect = false;
+                            String input = "";
+                            while(!inputCorrect) {
+                                System.out.println("An wessen pinwand wollen sie schreiben?");
+                                RegexService regex = new RegexService();
+                                String userInput = scanner.nextLine();
+                                inputCorrect = regex.isValidEmail(userInput);
+                                input = userInput;
+                            }
+                            User foundUser = currentUser.findUser(input);
+                            if (foundUser != null) {
+                                PinwandService pinwand = new PinwandService();
+                                System.out.println("Was wollen sie an seine Pinwand schreiben?");
+                                String pinwandbeitrag = scanner.nextLine();
+                                pinwand.addBeitragToPinwand(foundUser.getEmail(), pinwandbeitrag, currentUser.getEmail());
+                                System.out.println("Pinwand eintrag wurde erstellt");
+
+                            }
+
                         }
                         case 8 -> {
                             System.out.println("Use Case 8 ausgewählt.");
