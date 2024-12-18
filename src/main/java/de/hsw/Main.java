@@ -54,7 +54,24 @@ public class Main {
                 UserService userService = new UserService(new RegexService());
 
                 while (programmRuning) {
-                    System.out.println("Was wollen Sie als nächstes tun?");
+                    System.out.println("""
+                            Was wollen sie als nächstes tun?
+                            Menü:
+                            1.
+                            2.
+                            3. Guthaben einsehen
+                            4.
+                            5.
+                            6. Geld abheben
+                            7. Pinwand Beitrag erstellen
+                            8. Einsicht in meine Pinwand
+                            9. Benutzer suchen, Pinnwand anzeigen oder Nachricht senden
+                            10.
+                            11. Direktnachrichten oder Pinwand Exportieren
+                            12.
+                            13.
+                            
+                            """);
                     int choice = scanner.nextInt();
                     scanner.nextLine(); // Zeilenumbruch konsumieren
 
@@ -69,6 +86,7 @@ public class Main {
                         }
                         case 3 -> {
                             System.out.println("Use Case 3 ausgewählt.");
+                            currentUser.showMyBalance();
                         }
                         case 4, 5 -> {
                             //Massenüberweisung und Einzelüberweisung
@@ -82,12 +100,37 @@ public class Main {
                         }
                         case 6 -> {
                             System.out.println("Use Case 6 ausgewählt.");
+                            TransactionService blub = new TransactionService(currentUser);
+                            System.out.println("Wieviel Geld wollen sie abheben?");
+                            Double geldbetrag = scanner.nextDouble();
+                            blub.withdrawMoney(geldbetrag);
+                            currentUser.showMyBalance();
                         }
                         case 7 -> {
                             System.out.println("Use Case 7 ausgewählt.");
+                            boolean inputCorrect = false;
+                            String input = "";
+                            while(!inputCorrect) {
+                                System.out.println("An wessen pinwand wollen sie schreiben?");
+                                RegexService regex = new RegexService();
+                                String userInput = scanner.nextLine();
+                                inputCorrect = regex.isValidEmail(userInput);
+                                input = userInput;
+                            }
+                            User foundUser = currentUser.findUser(input);
+                            if (foundUser != null) {
+                                PinwandService pinwand = new PinwandService();
+                                System.out.println("Was wollen sie an seine Pinwand schreiben?");
+                                String pinwandbeitrag = scanner.nextLine();
+                                pinwand.addBeitragToPinwand(foundUser.getEmail(), pinwandbeitrag, currentUser.getEmail());
+                                System.out.println("Pinwand eintrag wurde erstellt");
+
+                            }
+
                         }
                         case 8 -> {
                             System.out.println("Use Case 8 ausgewählt.");
+                            currentUser.showPinwand();
                         }
                         case 9 -> {
                             // Use Case 9 - Benutzer suchen, Pinnwand anzeigen oder Nachricht senden
@@ -135,10 +178,17 @@ public class Main {
                                 System.out.println("Sie müssen angemeldet sein, um Nachrichten anzuzeigen.");
                             }
                         }
-
                         case 11 -> {
                             System.out.println("Geben Sie die E-Mail-Adresse des Kontakts ein:");
                             String contactEmail = scanner.nextLine();
+                            System.out.println("""
+                                                    Was möchten Sie exportieren?
+                                                    1. Direktnachrichten
+                                                    2. Pinnwandbeiträge
+                                                    3. Beides
+                                                    """);
+                            int exportChoice = scanner.nextInt();
+                            scanner.nextLine(); // Zeilenumbruch konsumieren
                             System.out.println("Geben Sie den Dateinamen für den Export ein (ohne Erweiterung):");
                             String fileName = scanner.nextLine();
 
@@ -146,9 +196,24 @@ public class Main {
                             CSVService csvService = new CSVService(currentUser);
 
                             try {
-                                // Kombinierten Export durchführen
-                                csvService.exportMessagesAndPinwand(contactEmail, fileName);
-                                System.out.println("Export erfolgreich! Datei gespeichert als: ./CSV/" + fileName + ".csv");
+                                switch (exportChoice) {
+                                    case 1 -> {
+                                        // Nur Direktnachrichten exportieren
+                                        csvService.exportDirectMessages(contactEmail, fileName);
+                                        System.out.println("Direktnachrichten erfolgreich exportiert! Datei gespeichert als: ./CSV/" + fileName + ".csv");
+                                    }
+                                    case 2 -> {
+                                        // Nur Pinnwandbeiträge exportieren
+                                        csvService.exportPinwandBeitraege(contactEmail, fileName);
+                                        System.out.println("Pinnwandbeiträge erfolgreich exportiert! Datei gespeichert als: ./CSV/" + fileName + ".csv");
+                                    }
+                                    case 3 -> {
+                                        // Beides exportieren
+                                        csvService.exportMessagesAndPinwand(contactEmail, fileName);
+                                        System.out.println("Direktnachrichten und Pinnwandbeiträge erfolgreich exportiert! Datei gespeichert als: ./CSV/" + fileName + ".csv");
+                                    }
+                                    default -> System.out.println("Ungültige Auswahl. Bitte wählen Sie 1, 2 oder 3.");
+                                }
                             } catch (UserNotFoundException e) {
                                 System.out.println(e.getMessage());
                             }

@@ -128,6 +128,84 @@ public class CSVService {
             throw new RuntimeException(e);
         }
     }
+    public void exportDirectMessages(String contactEmail, String fileName) {
+        String filePath = "./CSV/" + fileName + ".csv";
+        MessageRepository messageRepository = new MessageRepository();
+
+        // Kontakt validieren
+        User contactUser = userRepository.findUserByEmail(contactEmail);
+        if (contactUser == null) {
+            throw new UserNotFoundException("Der Benutzer mit der E-Mail " + contactEmail + " wurde nicht gefunden.");
+        }
+
+        // Direktnachrichten abrufen
+        List<Message> messages = messageRepository.getDirectMessages(user.getId(), contactUser.getId());
+
+        if (messages.isEmpty()) {
+            System.out.println("Keine Direktnachrichten gefunden.");
+            return;
+        }
+
+        // CSV-Datei schreiben
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            // Header schreiben
+            writer.write("Zeitpunkt der Nachricht;Sender;Empfänger;Nachricht");
+            writer.newLine();
+
+            // Nachrichten schreiben
+            for (Message message : messages) {
+                String row = String.join(";",
+                        message.getCreatedAt().toString(),
+                        userRepository.findUserById(message.getSenderId()).getEmail(),
+                        userRepository.findUserById(message.getReceiverId()).getEmail(),
+                        message.getMessage()
+                );
+                writer.write(row);
+                writer.newLine();
+            }
+
+            System.out.println("Direktnachrichten erfolgreich exportiert: " + filePath);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Fehler beim Schreiben der CSV-Datei", e);
+        }
+    }
+    public void exportPinwandBeitraege(String contactEmail, String fileName) {
+        String filePath = "./CSV/" + fileName + ".csv";
+        PinwandRepository pinwandRepository = new PinwandRepository();
+
+        // Beiträge abrufen
+        List<PinwandBeitrag> beitraege = pinwandRepository.getBeitraegeByVerfasser(contactEmail, user.getEmail());
+
+        if (beitraege.isEmpty()) {
+            System.out.println("Keine Pinnwandbeiträge gefunden.");
+            return;
+        }
+
+        // CSV-Datei schreiben
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            // Header schreiben
+            writer.write("Zeitpunkt der Nachricht;Empfänger (Pinnwand);Verfasser;Nachricht");
+            writer.newLine();
+
+            // Beiträge schreiben
+            for (PinwandBeitrag beitrag : beitraege) {
+                String row = String.join(";",
+                        beitrag.getTimestamp().toString(),
+                        beitrag.getEmail(),
+                        beitrag.getVerfasser(),
+                        beitrag.getBeitrag()
+                );
+                writer.write(row);
+                writer.newLine();
+            }
+
+            System.out.println("Pinnwandbeiträge erfolgreich exportiert: " + filePath);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Fehler beim Schreiben der CSV-Datei", e);
+        }
+    }
 
     public void exportMessagesAndPinwand(String contactEmail, String fileName) {
         String filePath = "./CSV/" + fileName + ".csv";
