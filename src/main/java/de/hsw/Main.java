@@ -2,8 +2,7 @@ package de.hsw;
 
 import Exceptions.UserNotFoundException;
 import Repository.UserRepository;
-import Services.CSVService;
-import Services.RegexService;
+import Services.*;
 import models.User;
 
 import java.sql.Timestamp;
@@ -12,11 +11,6 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         System.out.println("Aktuelles Arbeitsverzeichnis: " + System.getProperty("user.dir"));
-      
-/*
-        CSVService csvService = new CSVService();
-        csvService.readCSV("test");
-*/
         User currentUser = new User();
         Scanner scanner = new Scanner(System.in);
 
@@ -36,7 +30,7 @@ public class Main {
                     String email = scanner.nextLine();
                     System.out.println("Passwort:");
                     String password = scanner.nextLine();
-                    registerSuccesfull= register(email,password);
+                    registerSuccesfull = register(email, password);
                 }
 
             }
@@ -48,11 +42,15 @@ public class Main {
                     String email = scanner.nextLine();
                     System.out.println("Passwort:");
                     String password = scanner.nextLine();
-                    loginSuccesfull= login(email,password);
+                    loginSuccesfull = login(email, password);
                     UserRepository userRepository = new UserRepository();
                     currentUser = userRepository.findUserByEmail(email);
                 }
                 boolean programmRuning = true;
+
+                PinwandService pinwandService = new PinwandService();
+                TransactionService transactionService = new TransactionService(currentUser);
+                UserService userService = new UserService(new RegexService());
 
                 while (programmRuning) {
                     System.out.println("Was wollen sie als nächstes tun?");
@@ -68,6 +66,19 @@ public class Main {
                             // Platzhalter für Option 2
                             System.out.println("Option 2 ausgewählt.");
                         }
+                        case 4 -> {
+
+                        }
+                        case 5 -> {
+                            //Massenüberweisung und Einzelüberweisung
+                            System.out.println("Geben Sie einen Dateinamen an ohne (.csv), welche sich in dem Ordner \"CSV\" befindet");
+                            String fileName = scanner.nextLine();
+                            try {
+                                transactionService.transactionToUserCSV(fileName);
+                            } catch (UserNotFoundException | IllegalArgumentException e) {
+                                System.out.println(e.getMessage());
+                            }
+                        }
                         case 9 -> {
                             // Use Case 9 - Benutzer suchen, Pinnwand anzeigen oder Nachricht senden
                             System.out.println("Use Case 9 ausgewählt.");
@@ -79,10 +90,10 @@ public class Main {
                             if (foundUser != null) {
                                 System.out.println("Benutzer gefunden: " + foundUser.getEmail());
                                 System.out.println("""
-                                                        Was möchten Sie tun?
-                                                        1. Pinnwand anzeigen
-                                                        2. Nachricht senden
-                                                        """);
+                                        Was möchten Sie tun?
+                                        1. Pinnwand anzeigen
+                                        2. Nachricht senden
+                                        """);
                                 int action = scanner.nextInt();
                                 scanner.nextLine(); // Zeilenumbruch konsumieren
 
@@ -142,6 +153,7 @@ public class Main {
         scanner.close();
 
     }
+
     public static boolean login(String email, String password) {
         UserRepository userRepository = new UserRepository();
         User user = userRepository.findUserByEmail(email);
@@ -157,10 +169,11 @@ public class Main {
             return false;
         }
     }
+
     public static boolean register(String email, String password) {
         UserRepository userRepository = new UserRepository();
         RegexService regexService = new RegexService();
-        if (userRepository.findUserByEmail(email)==null) {
+        if (userRepository.findUserByEmail(email) == null) {
             if (regexService.isValidEmail(email)) {
                 if (regexService.isValidPassword(password)) {
                     userRepository.addUser(email, password, 1000, new Timestamp(System.currentTimeMillis()));
@@ -174,16 +187,11 @@ public class Main {
                 System.out.println("E-Mail ist nicht im richtigen Format. Versuche es erneut.");
                 return false;
             }
-        }else {
+        } else {
             System.out.println("Ein Account mit dieser E-Mail existiert bereits");
             return false;
         }
 
 
-
-
-
-
     }
-
 }
