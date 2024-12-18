@@ -65,7 +65,7 @@ public class Main {
                             5.
                             6.
                             7.
-                            8.
+                            8. Einsicht in meine Pinwand
                             9.
                             10.
                             11. Direktnachrichten oder Pinwand Exportieren
@@ -102,6 +102,7 @@ public class Main {
                         }
                         case 8 -> {
                             System.out.println("Use Case 8 ausgewählt.");
+                            currentUser.showPinwand();
                         }
                         case 9 -> {
                             // Use Case 9 - Benutzer suchen, Pinnwand anzeigen oder Nachricht senden
