@@ -4,6 +4,7 @@ import Exceptions.UserNotFoundException;
 import Repository.UserRepository;
 import Services.CSVService;
 import Services.RegexService;
+import Services.TransactionService;
 import models.User;
 
 import java.sql.Timestamp;
@@ -96,6 +97,10 @@ public class Main {
                         }
                         case 6 -> {
                             System.out.println("Use Case 6 ausgewählt.");
+                            TransactionService blub = new TransactionService(currentUser);
+                            System.out.println("Wieviel Geld wollen sie abheben?");
+                            Double geldbetrag = scanner.nextDouble();
+                            blub.withdrawMoney(geldbetrag);
                         }
                         case 7 -> {
                             System.out.println("Use Case 7 ausgewählt.");
