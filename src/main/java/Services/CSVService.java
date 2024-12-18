@@ -108,7 +108,7 @@ public class CSVService {
                         String.valueOf(item.getAmount()),
                 };
 
-                writer.write(String.join(",", row));
+                writer.write(String.join(";", row));
                 writer.newLine();
             }
 
