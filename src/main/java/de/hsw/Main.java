@@ -53,7 +53,7 @@ public class Main {
                 UserService userService = new UserService(new RegexService());
 
                 while (programmRuning) {
-                    System.out.println("Was wollen sie als nächstes tun?");
+                    System.out.println("Was wollen Sie als nächstes tun?");
                     int choice = scanner.nextInt();
                     scanner.nextLine(); // Zeilenumbruch konsumieren
 
@@ -66,9 +66,18 @@ public class Main {
                             // Platzhalter für Option 2
                             System.out.println("Option 2 ausgewählt.");
                         }
-                        case 4 -> {
-
+                        case 3 -> {
+                            System.out.println("Use Case 3 ausgewählt.");
                         }
+                        case 4 -> {
+                            //Massenüberweisung und Einzelüberweisung
+                            System.out.println("Geben Sie einen Dateinamen an ohne (.csv), welche sich in dem Ordner \"CSV\" befindet");
+                            String fileName = scanner.nextLine();
+                            try {
+                                transactionService.transactionToUserCSV(fileName);
+                            } catch (UserNotFoundException | IllegalArgumentException e) {
+                                System.out.println(e.getMessage());
+                            }
                         case 5 -> {
                             //Massenüberweisung und Einzelüberweisung
                             System.out.println("Geben Sie einen Dateinamen an ohne (.csv), welche sich in dem Ordner \"CSV\" befindet");
@@ -78,6 +87,14 @@ public class Main {
                             } catch (UserNotFoundException | IllegalArgumentException e) {
                                 System.out.println(e.getMessage());
                             }
+                        case 6 -> {
+                            System.out.println("Use Case 6 ausgewählt.");
+                        }
+                        case 7 -> {
+                            System.out.println("Use Case 7 ausgewählt.");
+                        }
+                        case 8 -> {
+                            System.out.println("Use Case 8 ausgewählt.");
                         }
                         case 9 -> {
                             // Use Case 9 - Benutzer suchen, Pinnwand anzeigen oder Nachricht senden
@@ -116,6 +133,16 @@ public class Main {
                                 System.out.println("Benutzer mit dieser E-Mail-Adresse wurde nicht gefunden.");
                             }
                         }
+                        case 10 -> {
+                            System.out.println("Use Case 10 ausgewählt.");
+                            if (currentUser != null) {
+                                UserRepository userRepository = new UserRepository();
+                                userRepository.showMyMessages(currentUser.getEmail());
+                            } else {
+                                System.out.println("Sie müssen angemeldet sein, um Nachrichten anzuzeigen.");
+                            }
+                        }
+
                         case 11 -> {
                             System.out.println("Geben Sie die E-Mail-Adresse des Kontakts ein:");
                             String contactEmail = scanner.nextLine();
@@ -133,6 +160,20 @@ public class Main {
                                 System.out.println(e.getMessage());
                             }
                         }
+                        case 12 -> {
+                            System.out.println("Use Case 12 ausgewählt.");
+                        }
+                        case 13 -> {
+                            System.out.println("Use Case 13 ausgewählt.");
+                            if (currentUser != null) {
+                                UserRepository userRepository = new UserRepository();
+                                System.out.println("Die letzten 10 Transaktionen für Benutzer-ID: " + currentUser.getId());
+                                userRepository.printLastTenTransactions(currentUser.getId());
+                            } else {
+                                System.out.println("Sie müssen angemeldet sein, um Ihre Transaktionen anzuzeigen.");
+                            }
+                        }
+
 
                         case 0 -> {
                             // Programm beenden
