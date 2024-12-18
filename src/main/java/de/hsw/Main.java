@@ -55,7 +55,7 @@ public class Main {
                 boolean programmRuning = true;
 
                 while (programmRuning) {
-                    System.out.println("Was wollen sie als nächstes tun?");
+                    System.out.println("Was wollen Sie als nächstes tun?");
                     int choice = scanner.nextInt();
                     scanner.nextLine(); // Zeilenumbruch konsumieren
 
@@ -125,7 +125,14 @@ public class Main {
                         }
                         case 10 -> {
                             System.out.println("Use Case 10 ausgewählt.");
+                            if (currentUser != null) {
+                                UserRepository userRepository = new UserRepository();
+                                userRepository.showMyMessages(currentUser.getEmail());
+                            } else {
+                                System.out.println("Sie müssen angemeldet sein, um Nachrichten anzuzeigen.");
+                            }
                         }
+
                         case 11 -> {
                             System.out.println("Geben Sie die E-Mail-Adresse des Kontakts ein:");
                             String contactEmail = scanner.nextLine();
