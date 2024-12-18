@@ -18,7 +18,7 @@ public class Main {
         csvService.readCSV("test");
 */
         User currentUser = new User();
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);9
 
         System.out.println("""
                 Möchtest du dich registrieren: 0
@@ -68,6 +68,24 @@ public class Main {
                             // Platzhalter für Option 2
                             System.out.println("Option 2 ausgewählt.");
                         }
+                        case 3 ->{
+                            System.out.println("Use Case 3 ausgewählt.");
+                        }
+                        case 4 -> {
+                            System.out.println("Use Case 4 ausgewählt.");
+                        }
+                        case 5 -> {
+                            System.out.println("Use Case 5 ausgewählt.");
+                        }
+                        case 6 -> {
+                            System.out.println("Use Case 6 ausgewählt.");
+                        }
+                        case 7 -> {
+                            System.out.println("Use Case 7 ausgewählt.");
+                        }
+                        case 8 -> {
+                            System.out.println("Use Case 8 ausgewählt.");
+                        }
                         case 9 -> {
                             // Use Case 9 - Benutzer suchen, Pinnwand anzeigen oder Nachricht senden
                             System.out.println("Use Case 9 ausgewählt.");
@@ -105,6 +123,9 @@ public class Main {
                                 System.out.println("Benutzer mit dieser E-Mail-Adresse wurde nicht gefunden.");
                             }
                         }
+                        case 10 ->{
+                            System.out.println("Use Case 10 ausgewählt.");
+                        }
                         case 11 -> {
                             System.out.println("Geben Sie die E-Mail-Adresse des Kontakts ein:");
                             String contactEmail = scanner.nextLine();
@@ -121,6 +142,9 @@ public class Main {
                             } catch (UserNotFoundException e) {
                                 System.out.println(e.getMessage());
                             }
+                        }
+                        case 12 -> {
+                            System.out.println("Use Case 12 ausgewählt.");
                         }
 
                         case 0 -> {
