@@ -54,7 +54,7 @@ class CSVServiceTest {
             writer.write(csvContent);
         }
 
-        List<Transaction> list = csvService.readCSV("test_single");
+        List<Transaction> list = csvService.readCSV("./CSV/test_single.csv");
 
         assertEquals(1, list.size(), "Eine Transaktion muss vorhanden sein.");
         Transaction transaction = list.get(0);

@@ -2,8 +2,7 @@ package de.hsw;
 
 import Exceptions.UserNotFoundException;
 import Repository.UserRepository;
-import Services.CSVService;
-import Services.RegexService;
+import Services.*;
 import models.User;
 
 import java.sql.Timestamp;
@@ -12,11 +11,6 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         System.out.println("Aktuelles Arbeitsverzeichnis: " + System.getProperty("user.dir"));
-      
-/*
-        CSVService csvService = new CSVService();
-        csvService.readCSV("test");
-*/
         User currentUser = new User();
         Scanner scanner = new Scanner(System.in);
 
@@ -54,6 +48,10 @@ public class Main {
                 }
                 boolean programmRuning = true;
 
+                PinwandService pinwandService = new PinwandService();
+                TransactionService transactionService = new TransactionService(currentUser);
+                UserService userService = new UserService(new RegexService());
+
                 while (programmRuning) {
                     System.out.println("Was wollen Sie als nächstes tun?");
                     int choice = scanner.nextInt();
@@ -72,11 +70,23 @@ public class Main {
                             System.out.println("Use Case 3 ausgewählt.");
                         }
                         case 4 -> {
-                            System.out.println("Use Case 4 ausgewählt.");
-                        }
+                            //Massenüberweisung und Einzelüberweisung
+                            System.out.println("Geben Sie einen Dateinamen an ohne (.csv), welche sich in dem Ordner \"CSV\" befindet");
+                            String fileName = scanner.nextLine();
+                            try {
+                                transactionService.transactionToUserCSV(fileName);
+                            } catch (UserNotFoundException | IllegalArgumentException e) {
+                                System.out.println(e.getMessage());
+                            }
                         case 5 -> {
-                            System.out.println("Use Case 5 ausgewählt.");
-                        }
+                            //Massenüberweisung und Einzelüberweisung
+                            System.out.println("Geben Sie einen Dateinamen an ohne (.csv), welche sich in dem Ordner \"CSV\" befindet");
+                            String fileName = scanner.nextLine();
+                            try {
+                                transactionService.transactionToUserCSV(fileName);
+                            } catch (UserNotFoundException | IllegalArgumentException e) {
+                                System.out.println(e.getMessage());
+                            }
                         case 6 -> {
                             System.out.println("Use Case 6 ausgewählt.");
                         }
@@ -225,5 +235,4 @@ public class Main {
 
 
     }
-
 }
