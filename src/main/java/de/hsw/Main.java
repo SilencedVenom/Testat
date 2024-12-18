@@ -55,7 +55,23 @@ public class Main {
                 boolean programmRuning = true;
 
                 while (programmRuning) {
-                    System.out.println("Was wollen sie als nächstes tun?");
+                    System.out.println("""
+                            Was wollen sie als nächstes tun?
+                            Menü:
+                            1.
+                            2.
+                            3. Guthaben einsehen
+                            4.
+                            5.
+                            6.
+                            7.
+                            8.
+                            9.
+                            10.
+                            11. Direktnachrichten oder Pinwand Exportieren
+                            12.
+                            
+                            """);
                     int choice = scanner.nextInt();
                     scanner.nextLine(); // Zeilenumbruch konsumieren
 
@@ -70,6 +86,7 @@ public class Main {
                         }
                         case 3 -> {
                             System.out.println("Use Case 3 ausgewählt.");
+                            currentUser.showMyBalance();
                         }
                         case 4 -> {
                             System.out.println("Use Case 4 ausgewählt.");

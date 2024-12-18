@@ -70,8 +70,8 @@ public class User {
         return null;
     }
 
-    public void showBalance(User user) {
-        System.out.println("Ihr aktueller Kontostand: " + user.getBalance());
+    public void showMyBalance() {
+        System.out.println("Ihr aktueller Kontostand: " + this.getBalance());
     }
 
     public User findUser(String email) {
