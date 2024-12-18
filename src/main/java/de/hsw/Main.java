@@ -1,5 +1,6 @@
 package de.hsw;
 
+import Exceptions.TransactionsNotFoundException;
 import Exceptions.UserNotFoundException;
 import Repository.UserRepository;
 import Services.*;
@@ -153,8 +154,15 @@ public class Main {
                             }
                         }
                         case 12 -> {
-                            System.out.println("Use Case 12 ausgewählt.");
+                            System.out.println("Bitte gib einen Dateinamen an. Die Datei wird in dem Ordner CSV gespeichert.");
+                            String fileName = scanner.nextLine();
+                            try {
+                                transactionService.writeTransactions(fileName);
+                            } catch (TransactionsNotFoundException | IllegalArgumentException e) {
+                                System.out.println(e.getMessage());
+                            }
                         }
+
                         case 13 -> {
                             System.out.println("Use Case 13 ausgewählt.");
                             if (currentUser != null) {
