@@ -18,7 +18,7 @@ public class Main {
         csvService.readCSV("test");
 */
         User currentUser = new User();
-        Scanner scanner = new Scanner(System.in);9
+        Scanner scanner = new Scanner(System.in);
 
         System.out.println("""
                 Möchtest du dich registrieren: 0
@@ -36,7 +36,7 @@ public class Main {
                     String email = scanner.nextLine();
                     System.out.println("Passwort:");
                     String password = scanner.nextLine();
-                    registerSuccesfull= register(email,password);
+                    registerSuccesfull = register(email, password);
                 }
 
             }
@@ -48,7 +48,7 @@ public class Main {
                     String email = scanner.nextLine();
                     System.out.println("Passwort:");
                     String password = scanner.nextLine();
-                    loginSuccesfull= login(email,password);
+                    loginSuccesfull = login(email, password);
                     UserRepository userRepository = new UserRepository();
                     currentUser = userRepository.findUserByEmail(email);
                 }
@@ -68,7 +68,7 @@ public class Main {
                             // Platzhalter für Option 2
                             System.out.println("Option 2 ausgewählt.");
                         }
-                        case 3 ->{
+                        case 3 -> {
                             System.out.println("Use Case 3 ausgewählt.");
                         }
                         case 4 -> {
@@ -97,10 +97,10 @@ public class Main {
                             if (foundUser != null) {
                                 System.out.println("Benutzer gefunden: " + foundUser.getEmail());
                                 System.out.println("""
-                                                        Was möchten Sie tun?
-                                                        1. Pinnwand anzeigen
-                                                        2. Nachricht senden
-                                                        """);
+                                        Was möchten Sie tun?
+                                        1. Pinnwand anzeigen
+                                        2. Nachricht senden
+                                        """);
                                 int action = scanner.nextInt();
                                 scanner.nextLine(); // Zeilenumbruch konsumieren
 
@@ -123,7 +123,7 @@ public class Main {
                                 System.out.println("Benutzer mit dieser E-Mail-Adresse wurde nicht gefunden.");
                             }
                         }
-                        case 10 ->{
+                        case 10 -> {
                             System.out.println("Use Case 10 ausgewählt.");
                         }
                         case 11 -> {
@@ -166,6 +166,7 @@ public class Main {
         scanner.close();
 
     }
+
     public static boolean login(String email, String password) {
         UserRepository userRepository = new UserRepository();
         User user = userRepository.findUserByEmail(email);
@@ -181,10 +182,11 @@ public class Main {
             return false;
         }
     }
+
     public static boolean register(String email, String password) {
         UserRepository userRepository = new UserRepository();
         RegexService regexService = new RegexService();
-        if (userRepository.findUserByEmail(email)==null) {
+        if (userRepository.findUserByEmail(email) == null) {
             if (regexService.isValidEmail(email)) {
                 if (regexService.isValidPassword(password)) {
                     userRepository.addUser(email, password, 1000, new Timestamp(System.currentTimeMillis()));
@@ -198,14 +200,10 @@ public class Main {
                 System.out.println("E-Mail ist nicht im richtigen Format. Versuche es erneut.");
                 return false;
             }
-        }else {
+        } else {
             System.out.println("Ein Account mit dieser E-Mail existiert bereits");
             return false;
         }
-
-
-
-
 
 
     }
