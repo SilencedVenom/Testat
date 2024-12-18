@@ -153,6 +153,17 @@ public class Main {
                         case 12 -> {
                             System.out.println("Use Case 12 ausgewählt.");
                         }
+                        case 13 -> {
+                            System.out.println("Use Case 13 ausgewählt.");
+                            if (currentUser != null) {
+                                UserRepository userRepository = new UserRepository();
+                                System.out.println("Die letzten 10 Transaktionen für Benutzer-ID: " + currentUser.getId());
+                                userRepository.printLastTenTransactions(currentUser.getId());
+                            } else {
+                                System.out.println("Sie müssen angemeldet sein, um Ihre Transaktionen anzuzeigen.");
+                            }
+                        }
+
 
                         case 0 -> {
                             // Programm beenden
