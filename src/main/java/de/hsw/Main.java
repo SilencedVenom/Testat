@@ -129,6 +129,14 @@ public class Main {
                         case 11 -> {
                             System.out.println("Geben Sie die E-Mail-Adresse des Kontakts ein:");
                             String contactEmail = scanner.nextLine();
+                            System.out.println("""
+                                                    Was möchten Sie exportieren?
+                                                    1. Direktnachrichten
+                                                    2. Pinnwandbeiträge
+                                                    3. Beides
+                                                    """);
+                            int exportChoice = scanner.nextInt();
+                            scanner.nextLine(); // Zeilenumbruch konsumieren
                             System.out.println("Geben Sie den Dateinamen für den Export ein (ohne Erweiterung):");
                             String fileName = scanner.nextLine();
 
@@ -136,13 +144,29 @@ public class Main {
                             CSVService csvService = new CSVService(currentUser);
 
                             try {
-                                // Kombinierten Export durchführen
-                                csvService.exportMessagesAndPinwand(contactEmail, fileName);
-                                System.out.println("Export erfolgreich! Datei gespeichert als: ./CSV/" + fileName + ".csv");
+                                switch (exportChoice) {
+                                    case 1 -> {
+                                        // Nur Direktnachrichten exportieren
+                                        csvService.exportDirectMessages(contactEmail, fileName);
+                                        System.out.println("Direktnachrichten erfolgreich exportiert! Datei gespeichert als: ./CSV/" + fileName + ".csv");
+                                    }
+                                    case 2 -> {
+                                        // Nur Pinnwandbeiträge exportieren
+                                        csvService.exportPinwandBeitraege(contactEmail, fileName);
+                                        System.out.println("Pinnwandbeiträge erfolgreich exportiert! Datei gespeichert als: ./CSV/" + fileName + ".csv");
+                                    }
+                                    case 3 -> {
+                                        // Beides exportieren
+                                        csvService.exportMessagesAndPinwand(contactEmail, fileName);
+                                        System.out.println("Direktnachrichten und Pinnwandbeiträge erfolgreich exportiert! Datei gespeichert als: ./CSV/" + fileName + ".csv");
+                                    }
+                                    default -> System.out.println("Ungültige Auswahl. Bitte wählen Sie 1, 2 oder 3.");
+                                }
                             } catch (UserNotFoundException e) {
                                 System.out.println(e.getMessage());
                             }
                         }
+
                         case 12 -> {
                             System.out.println("Use Case 12 ausgewählt.");
                         }
