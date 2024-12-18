@@ -101,6 +101,7 @@ public class Main {
                             System.out.println("Wieviel Geld wollen sie abheben?");
                             Double geldbetrag = scanner.nextDouble();
                             blub.withdrawMoney(geldbetrag);
+                            currentUser.showMyBalance();
                         }
                         case 7 -> {
                             System.out.println("Use Case 7 ausgewählt.");
