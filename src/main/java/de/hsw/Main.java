@@ -1,11 +1,9 @@
 package de.hsw;
 
+import Exceptions.TransactionsNotFoundException;
 import Exceptions.UserNotFoundException;
 import Repository.UserRepository;
-import Services.CSVService;
-import Services.PinwandService;
-import Services.RegexService;
-import Services.TransactionService;
+import Services.*;
 import models.User;
 
 import java.sql.Timestamp;
@@ -14,11 +12,6 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         System.out.println("Aktuelles Arbeitsverzeichnis: " + System.getProperty("user.dir"));
-      
-/*
-        CSVService csvService = new CSVService();
-        csvService.readCSV("test");
-*/
         User currentUser = new User();
         Scanner scanner = new Scanner(System.in);
 
@@ -56,6 +49,10 @@ public class Main {
                 }
                 boolean programmRuning = true;
 
+                PinwandService pinwandService = new PinwandService();
+                TransactionService transactionService = new TransactionService(currentUser);
+                UserService userService = new UserService(new RegexService());
+
                 while (programmRuning) {
                     System.out.println("""
                             Was wollen sie als nächstes tun?
@@ -91,11 +88,15 @@ public class Main {
                             System.out.println("Use Case 3 ausgewählt.");
                             currentUser.showMyBalance();
                         }
-                        case 4 -> {
-                            System.out.println("Use Case 4 ausgewählt.");
-                        }
-                        case 5 -> {
-                            System.out.println("Use Case 5 ausgewählt.");
+                        case 4, 5 -> {
+                            //Massenüberweisung und Einzelüberweisung
+                            System.out.println("Geben Sie einen Dateinamen an ohne (.csv), welche sich in dem Ordner \"CSV\" befindet");
+                            String fileName = scanner.nextLine();
+                            try {
+                                transactionService.transactionToUserCSV(fileName);
+                            } catch (UserNotFoundException | IllegalArgumentException e) {
+                                System.out.println(e.getMessage());
+                            }
                         }
                         case 6 -> {
                             System.out.println("Use Case 6 ausgewählt.");
@@ -170,6 +171,12 @@ public class Main {
                         }
                         case 10 -> {
                             System.out.println("Use Case 10 ausgewählt.");
+                            if (currentUser != null) {
+                                UserRepository userRepository = new UserRepository();
+                                userRepository.showMyMessages(currentUser.getEmail());
+                            } else {
+                                System.out.println("Sie müssen angemeldet sein, um Nachrichten anzuzeigen.");
+                            }
                         }
                         case 11 -> {
                             System.out.println("Geben Sie die E-Mail-Adresse des Kontakts ein:");
@@ -211,10 +218,27 @@ public class Main {
                                 System.out.println(e.getMessage());
                             }
                         }
-
                         case 12 -> {
-                            System.out.println("Use Case 12 ausgewählt.");
+                            System.out.println("Bitte gib einen Dateinamen an. Die Datei wird in dem Ordner CSV gespeichert.");
+                            String fileName = scanner.nextLine();
+                            try {
+                                transactionService.writeTransactions(fileName);
+                            } catch (TransactionsNotFoundException | IllegalArgumentException e) {
+                                System.out.println(e.getMessage());
+                            }
                         }
+
+                        case 13 -> {
+                            System.out.println("Use Case 13 ausgewählt.");
+                            if (currentUser != null) {
+                                UserRepository userRepository = new UserRepository();
+                                System.out.println("Die letzten 10 Transaktionen für Benutzer-ID: " + currentUser.getId());
+                                userRepository.printLastTenTransactions(currentUser.getId());
+                            } else {
+                                System.out.println("Sie müssen angemeldet sein, um Ihre Transaktionen anzuzeigen.");
+                            }
+                        }
+
 
                         case 0 -> {
                             // Programm beenden
@@ -276,5 +300,4 @@ public class Main {
 
 
     }
-
 }

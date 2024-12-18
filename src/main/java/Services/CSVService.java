@@ -26,9 +26,15 @@ public class CSVService {
         this.user = user;
     }
 
-    public List<Transaction> readCSV(String fileName) {
-        String filePath = "./CSV/" + fileName + ".csv";
+    public List<Transaction> readCSV(String filePath) throws FileNotFoundException {
         List<Transaction> transactions = new ArrayList<>();
+
+        File file = new File(filePath);
+
+        if (!file.exists()) {
+            throw new FileNotFoundException();
+        }
+
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {

@@ -2,7 +2,7 @@ package Repository;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.sql.SQLException;
 
 class UserRepositoryTest {
 
@@ -21,4 +21,16 @@ class UserRepositoryTest {
     @Test
     void checkIfAccountExists() {
     }
+
+    @Test
+    void showMyMessages() throws SQLException {
+
+    }
+
+
+    @Test
+    void printLastTenTransactions() throws SQLException {
+
+    }
+
 }

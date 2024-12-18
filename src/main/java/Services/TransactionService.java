@@ -9,6 +9,7 @@ import Repository.UserRepository;
 import models.Transaction;
 import models.User;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 public class TransactionService {
@@ -31,7 +32,7 @@ public class TransactionService {
      * @param email   Email vom User
      * @param balance zu übertragender Betrag
      */
-    public void transactionToUser(String email, double balance) {
+    private void transactionToUser(String email, double balance) {
         if (balance > user.getBalance()) {
             throw new BalanceExceededException("Die zu überweisende Geldsumme übersteigt deinen Kontostand.");
         }
@@ -57,24 +58,34 @@ public class TransactionService {
     }
 
     public void transactionToUserCSV(String fileName) {
-        if (regexService.isValidFilename(fileName)) {
-            List<Transaction> transactions = csvService.readCSV(fileName);
+        String filesPath = "./CSV/" + fileName + ".csv";
+        if (regexService.isValidFilename(filesPath)) {
+            try {
+                List<Transaction> transactions = csvService.readCSV(filesPath);
 
-
-            for (Transaction transaction : transactions) {
-                User receiver = userRepository.findUserById(transaction.getReceiverId());
-                if (receiver == null) {
-                    throw new UserNotFoundException("Empfänger nicht gefunden");
+                for (Transaction transaction : transactions) {
+                    User receiver = userRepository.findUserById(transaction.getReceiverId());
+                    if (receiver == null) {
+                        throw new UserNotFoundException("Empfänger nicht gefunden");
+                    }
+                    double balance = transaction.getAmount();
+                    try {
+                        transactionToUser(receiver.getEmail(), balance);
+                    } catch (NegativeTransactionException | UserNotFoundException | BalanceExceededException e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
-                double balance = transaction.getAmount();
-                transactionToUser(receiver.getEmail(), balance);
-            }
 
-            transactionRepository.sendTransaction(transactions);
+                transactionRepository.sendTransaction(transactions);
+                System.out.println("Die Überweisung war erfolgreich.");
+            } catch (FileNotFoundException e) {
+                System.out.println("Die Datei wurde nicht gefunden: " + filesPath);
+            }
         } else {
-            throw new IllegalArgumentException("Der Filename ist ist nicht gültig.");
+            throw new IllegalArgumentException("Der Filename ist nicht gültig.");
         }
     }
+
 
     public void withdrawMoney(double balance) {
         if (balance > user.getBalance()) {
@@ -90,12 +101,13 @@ public class TransactionService {
     }
 
     public void writeTransactions(String fileName) {
+        String filePath = "./CSV/" + fileName + ".csv";
         List<Transaction> transactions = transactionRepository.getTransactionsBySenderId(user.getId());
         if (transactions.isEmpty()) {
             throw new TransactionsNotFoundException("Es sind keine Transaktionen vorhanden.");
         }
-        if (regexService.isValidFilename(fileName)) {
-            csvService.writeCSVTransactions(fileName, transactions);
+        if (regexService.isValidFilename(filePath)) {
+            csvService.writeCSVTransactions(filePath, transactions);
         } else {
             throw new IllegalArgumentException("Der Filename ist ist nicht gültig.");
         }
