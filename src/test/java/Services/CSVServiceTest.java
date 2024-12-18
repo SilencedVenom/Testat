@@ -65,7 +65,7 @@ class CSVServiceTest {
     }
 
     @Test
-    void testWriteCSVTransaction() throws IOException {
+    void testWriteCSVTransaction() {
         int senderId = userRepository.findUserByEmail("sender@example.com").getId();
         int receiverId = userRepository.findUserByEmail("receiver@example.com").getId();
 
