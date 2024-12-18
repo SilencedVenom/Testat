@@ -69,7 +69,7 @@ public class Main {
                         case 3 -> {
                             System.out.println("Use Case 3 ausgewählt.");
                         }
-                        case 4 -> {
+                        case 4, 5 -> {
                             //Massenüberweisung und Einzelüberweisung
                             System.out.println("Geben Sie einen Dateinamen an ohne (.csv), welche sich in dem Ordner \"CSV\" befindet");
                             String fileName = scanner.nextLine();
@@ -78,15 +78,7 @@ public class Main {
                             } catch (UserNotFoundException | IllegalArgumentException e) {
                                 System.out.println(e.getMessage());
                             }
-                        case 5 -> {
-                            //Massenüberweisung und Einzelüberweisung
-                            System.out.println("Geben Sie einen Dateinamen an ohne (.csv), welche sich in dem Ordner \"CSV\" befindet");
-                            String fileName = scanner.nextLine();
-                            try {
-                                transactionService.transactionToUserCSV(fileName);
-                            } catch (UserNotFoundException | IllegalArgumentException e) {
-                                System.out.println(e.getMessage());
-                            }
+                        }
                         case 6 -> {
                             System.out.println("Use Case 6 ausgewählt.");
                         }
