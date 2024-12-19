@@ -1,5 +1,7 @@
 package de.hsw;
 
+import Exceptions.BalanceExceededException;
+import Exceptions.NegativeTransactionException;
 import Exceptions.TransactionsNotFoundException;
 import Exceptions.UserNotFoundException;
 import Repository.UserRepository;
@@ -92,7 +94,22 @@ public class Main {
                             System.out.println("Use Case 3 ausgewählt.");
                             currentUser.showMyBalance();
                         }
-                        case 4, 5 -> {
+                        case 4 -> {
+                            System.out.println("Bitte geben Sie die Email des anderen Users ein.");
+                            String emailReceiver = scanner.nextLine();
+                            System.out.println("Bitte geben Sie den zu überweisenden Betrag an.");
+                            double amount = scanner.nextDouble();
+                            System.out.println("Bitte geben sie eine Beschreibung an.");
+                            String description = scanner.nextLine();
+                            try {
+                                transactionService.transactionToUser(emailReceiver, amount);
+                                transactionService.buildTransaction(currentUser.getEmail(), emailReceiver, amount, description);
+                            } catch (BalanceExceededException | UserNotFoundException |
+                                     NegativeTransactionException e) {
+                                System.out.println(e.getMessage());
+                            }
+                        }
+                        case 5 -> {
                             //Massenüberweisung und Einzelüberweisung
                             System.out.println("Geben Sie einen Dateinamen an ohne (.csv), welche sich in dem Ordner \"CSV\" befindet");
                             String fileName = scanner.nextLine();

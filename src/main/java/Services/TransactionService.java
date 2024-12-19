@@ -10,6 +10,7 @@ import models.Transaction;
 import models.User;
 
 import java.io.FileNotFoundException;
+import java.sql.Date;
 import java.util.List;
 
 public class TransactionService {
@@ -29,19 +30,19 @@ public class TransactionService {
     }
 
     /**
-     * @param email   Email vom User
-     * @param balance zu übertragender Betrag
+     * @param emailReceiver Email vom User
+     * @param balance       zu übertragender Betrag
      */
-    private void transactionToUser(String email, double balance) {
+    public void transactionToUser(String emailReceiver, double balance) {
         if (balance > user.getBalance()) {
             throw new BalanceExceededException("Die zu überweisende Geldsumme übersteigt deinen Kontostand.");
         }
 
-        if (!regexService.isValidEmail(email)) {
+        if (!regexService.isValidEmail(emailReceiver)) {
             throw new UserNotFoundException("Die Email ist nicht vorhanden.");
         }
 
-        User target = userRepository.findUserByEmail(email);
+        User target = userRepository.findUserByEmail(emailReceiver);
         if (target == null) {
             throw new UserNotFoundException("Der Benutzer ist nicht vorhanden.");
         }
@@ -119,5 +120,15 @@ public class TransactionService {
         }
     }
 
-
+    public void buildTransaction(String emailSender, String emailReceiver, double amount, String description) {
+        Transaction transaction = new Transaction(
+                userRepository.findUserByEmail(emailSender).getId(),
+                userRepository.findUserByEmail(emailReceiver).getId(),
+                amount,
+                description,
+                new Date(System.currentTimeMillis())
+        );
+        List<Transaction> list = List.of(transaction);
+        transactionRepository.sendTransaction(list);
+    }
 }
