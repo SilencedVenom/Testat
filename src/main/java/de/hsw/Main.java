@@ -52,25 +52,28 @@ public class Main {
                 PinwandService pinwandService = new PinwandService();
                 TransactionService transactionService = new TransactionService(currentUser);
                 UserService userService = new UserService(new RegexService());
+                RegexService regexService = new RegexService();
+                // CSVService-Instanz erstellen
+                CSVService csvService = new CSVService(currentUser);
 
                 while (programmRuning) {
                     System.out.println("""
-                            Was wollen sie als nächstes tun?
-                            Menü:
-                            1.
-                            2.
-                            3. Guthaben einsehen
-                            4.
-                            5.
-                            6. Geld abheben
-                            7. Pinwand Beitrag erstellen
-                            8. Einsicht in meine Pinwand
-                            9. Benutzer suchen, Pinnwand anzeigen oder Nachricht senden
-                            10.
-                            11. Direktnachrichten oder Pinwand Exportieren
-                            12.
-                            13.
-                            
+                            Was wollen Sie als nächstes tun?
+                                        Menü:
+                                        1. (Platzhalter für zukünftige Funktion)
+                                        2. (Platzhalter für zukünftige Funktion)
+                                        3. Guthaben einsehen
+                                        4. Massenüberweisung durchführen
+                                        5. Einzelüberweisung durchführen
+                                        6. Geld abheben
+                                        7. Pinwand Beitrag erstellen
+                                        8. Einsicht in meine Pinwand
+                                        9. Benutzer suchen, Pinnwand anzeigen oder Nachricht senden
+                                        10. Nachrichten anzeigen
+                                        11. Direktnachrichten oder Pinnwand exportieren
+                                        12. Transaktionen exportieren
+                                        13. Letzte 10 Transaktionen anzeigen
+                                        0. Programm beenden
                             """);
                     int choice = scanner.nextInt();
                     scanner.nextLine(); // Zeilenumbruch konsumieren
@@ -85,6 +88,7 @@ public class Main {
                             System.out.println("Option 2 ausgewählt.");
                         }
                         case 3 -> {
+                            //Guthaben einsehen
                             System.out.println("Use Case 3 ausgewählt.");
                             currentUser.showMyBalance();
                         }
@@ -99,22 +103,23 @@ public class Main {
                             }
                         }
                         case 6 -> {
+                            // Geldabheben entfernt den Betrag vom Betrag in der Datenbank und zeigt anschließend den aktualisierten Kontostand
                             System.out.println("Use Case 6 ausgewählt.");
-                            TransactionService blub = new TransactionService(currentUser);
                             System.out.println("Wieviel Geld wollen sie abheben?");
-                            Double geldbetrag = scanner.nextDouble();
-                            blub.withdrawMoney(geldbetrag);
+                            double geldbetrag = scanner.nextDouble();
+                            transactionService.withdrawMoney(geldbetrag);
                             currentUser.showMyBalance();
                         }
                         case 7 -> {
+                            // 1. Sucht User 2. Abfrage Was an die Pinwand Soll Anschließend neuen Pinwandeintrag generiert
                             System.out.println("Use Case 7 ausgewählt.");
                             boolean inputCorrect = false;
                             String input = "";
                             while(!inputCorrect) {
                                 System.out.println("An wessen pinwand wollen sie schreiben?");
-                                RegexService regex = new RegexService();
+
                                 String userInput = scanner.nextLine();
-                                inputCorrect = regex.isValidEmail(userInput);
+                                inputCorrect = regexService.isValidEmail(userInput);
                                 input = userInput;
                             }
                             User foundUser = currentUser.findUser(input);
@@ -129,6 +134,7 @@ public class Main {
 
                         }
                         case 8 -> {
+                            // Zeigt die eigene Pinwand
                             System.out.println("Use Case 8 ausgewählt.");
                             currentUser.showPinwand();
                         }
@@ -170,6 +176,7 @@ public class Main {
                             }
                         }
                         case 10 -> {
+                            // Warum wird hier nochmal gepprüft ob man eingeloggt ist? Man Kommt da gar nicht hin wenn man nicht eingeloggt ist
                             System.out.println("Use Case 10 ausgewählt.");
                             if (currentUser != null) {
                                 UserRepository userRepository = new UserRepository();
@@ -179,6 +186,7 @@ public class Main {
                             }
                         }
                         case 11 -> {
+                            // Abfrage des Kontaktes mit dem der Verlauf exportiert werden soll
                             System.out.println("Geben Sie die E-Mail-Adresse des Kontakts ein:");
                             String contactEmail = scanner.nextLine();
                             System.out.println("""
@@ -192,8 +200,7 @@ public class Main {
                             System.out.println("Geben Sie den Dateinamen für den Export ein (ohne Erweiterung):");
                             String fileName = scanner.nextLine();
 
-                            // CSVService-Instanz erstellen
-                            CSVService csvService = new CSVService(currentUser);
+
 
                             try {
                                 switch (exportChoice) {
@@ -229,6 +236,7 @@ public class Main {
                         }
 
                         case 13 -> {
+                            // Die letzten 10 Transactions werden angezeigt
                             System.out.println("Use Case 13 ausgewählt.");
                             if (currentUser != null) {
                                 UserRepository userRepository = new UserRepository();
@@ -259,7 +267,7 @@ public class Main {
         scanner.close();
 
     }
-
+    // Loginmethode überprüft ob das Passwort mit dem in der Datenbank übereinstimmt
     public static boolean login(String email, String password) {
         UserRepository userRepository = new UserRepository();
         User user = userRepository.findUserByEmail(email);
@@ -275,7 +283,7 @@ public class Main {
             return false;
         }
     }
-
+    // Registrierung
     public static boolean register(String email, String password) {
         UserRepository userRepository = new UserRepository();
         RegexService regexService = new RegexService();

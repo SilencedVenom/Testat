@@ -86,7 +86,10 @@ public class TransactionService {
         }
     }
 
-
+    /**
+     * Entnimmt den Geldbetrag vom aktuell eingeloggten Kunden
+     * @param balance
+     */
     public void withdrawMoney(double balance) {
         if (balance > user.getBalance()) {
             throw new BalanceExceededException("Die zu überweisende Geldsumme übersteigt deinen Kontostand.");
@@ -99,7 +102,10 @@ public class TransactionService {
             }
         }
     }
-
+    /**
+     * Erzeugt einen Filepath zur Weiterverarbietung
+     * @param fileName
+     */
     public void writeTransactions(String fileName) {
         String filePath = "./CSV/" + fileName + ".csv";
         List<Transaction> transactions = transactionRepository.getTransactionsBySenderId(user.getId());

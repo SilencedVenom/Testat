@@ -54,6 +54,7 @@ public class User {
         return createdAt;
     }
 
+    /*Nutzlos Kann weg
     public User login(String email, String password) {
         UserRepository userRepository = new UserRepository();
         User user = userRepository.findUserByEmail(email);
@@ -68,18 +69,25 @@ public class User {
             System.out.println("Benutzer nicht gefunden.");
         }
         return null;
-    }
-
+    }*/
+    /**
+     * Zeigt den Aktuellen Kontostand an
+     */
     public void showMyBalance() {
         System.out.println("Ihr aktueller Kontostand: " + this.getBalance());
     }
-
+    /**
+     * Returned einen User
+     * @param email
+     */
     public User findUser(String email) {
         UserRepository userRepository = new UserRepository();
 
         return userRepository.findUserByEmail(email);
     }
-
+    /**
+     * zeigt die Pinwand des Users an
+     */
     public void showPinwand() {
         PinwandRepository pinwandRepository = new PinwandRepository();
         List<PinwandBeitrag> beitraege = pinwandRepository.getBeitraege(this.email);
@@ -93,7 +101,11 @@ public class User {
             }
         }
     }
-
+    /**
+     * sendet eine Nachricht
+     * @param receiver
+     * @param messageText
+     */
     public void sendMessage(User receiver, String messageText) {
         if (receiver != null) {
             // Erstellen der Nachricht
