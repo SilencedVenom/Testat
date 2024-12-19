@@ -3,9 +3,7 @@ package models;
 import Repository.MessageRepository;
 import Repository.PinwandRepository;
 import Repository.UserRepository;
-
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 // User class representing the users table
@@ -54,22 +52,14 @@ public class User {
         return createdAt;
     }
 
-    /*Nutzlos Kann weg
-    public User login(String email, String password) {
+    public void showMyMessages(){
         UserRepository userRepository = new UserRepository();
-        User user = userRepository.findUserByEmail(email);
-        if (user != null) {
-            String storedPassword = user.getPassword();
-            if (storedPassword.equals(password)) {
-                return user;
-            } else {
-                System.out.println("Falsches Passwort.");
-            }
-        } else {
-            System.out.println("Benutzer nicht gefunden.");
-        }
-        return null;
-    }*/
+        userRepository.showMyMessages(this.email);
+    }
+    public void showLastTenTransactions(){
+        UserRepository userRepository = new UserRepository();
+        userRepository.printLastTenTransactions(this.getId());
+    }
     /**
      * Zeigt den Aktuellen Kontostand an
      */

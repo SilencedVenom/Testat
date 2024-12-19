@@ -53,7 +53,7 @@ public class Main {
 
                 PinwandService pinwandService = new PinwandService();
                 TransactionService transactionService = new TransactionService(currentUser);
-                UserService userService = new UserService(new RegexService());
+
                 RegexService regexService = new RegexService();
                 // CSVService-Instanz erstellen
                 CSVService csvService = new CSVService(currentUser);
@@ -62,11 +62,9 @@ public class Main {
                     System.out.println("""
                             Was wollen Sie als nächstes tun?
                                         Menü:
-                                        1. (Platzhalter für zukünftige Funktion)
-                                        2. (Platzhalter für zukünftige Funktion)
                                         3. Guthaben einsehen
-                                        4. Massenüberweisung durchführen
-                                        5. Einzelüberweisung durchführen
+                                        4. Einzelüberweisung durchführen
+                                        5. Massenüberweisung durchführen
                                         6. Geld abheben
                                         7. Pinwand Beitrag erstellen
                                         8. Einsicht in meine Pinwand
@@ -81,14 +79,7 @@ public class Main {
                     scanner.nextLine(); // Zeilenumbruch konsumieren
 
                     switch (choice) {
-                        case 1 -> {
-                            // Platzhalter für Option 1
-                            System.out.println("Option 1 ausgewählt.");
-                        }
-                        case 2 -> {
-                            // Platzhalter für Option 2
-                            System.out.println("Option 2 ausgewählt.");
-                        }
+
                         case 3 -> {
                             //Guthaben einsehen
                             System.out.println("Use Case 3 ausgewählt.");
@@ -124,7 +115,11 @@ public class Main {
                             System.out.println("Use Case 6 ausgewählt.");
                             System.out.println("Wieviel Geld wollen sie abheben?");
                             double geldbetrag = scanner.nextDouble();
-                            transactionService.withdrawMoney(geldbetrag);
+                            try {
+                                transactionService.withdrawMoney(geldbetrag);
+                            } catch (BalanceExceededException e) {
+                                System.out.println(e.getMessage());
+                            }
                             currentUser.showMyBalance();
                         }
                         case 7 -> {
@@ -193,14 +188,9 @@ public class Main {
                             }
                         }
                         case 10 -> {
-                            // Warum wird hier nochmal gepprüft ob man eingeloggt ist? Man Kommt da gar nicht hin wenn man nicht eingeloggt ist
+                            // Die Messages Werden hier geprinted
                             System.out.println("Use Case 10 ausgewählt.");
-                            if (currentUser != null) {
-                                UserRepository userRepository = new UserRepository();
-                                userRepository.showMyMessages(currentUser.getEmail());
-                            } else {
-                                System.out.println("Sie müssen angemeldet sein, um Nachrichten anzuzeigen.");
-                            }
+                            currentUser.showMyMessages();
                         }
                         case 11 -> {
                             // Abfrage des Kontaktes mit dem der Verlauf exportiert werden soll
@@ -255,13 +245,8 @@ public class Main {
                         case 13 -> {
                             // Die letzten 10 Transactions werden angezeigt
                             System.out.println("Use Case 13 ausgewählt.");
-                            if (currentUser != null) {
-                                UserRepository userRepository = new UserRepository();
-                                System.out.println("Die letzten 10 Transaktionen für Benutzer-ID: " + currentUser.getId());
-                                userRepository.printLastTenTransactions(currentUser.getId());
-                            } else {
-                                System.out.println("Sie müssen angemeldet sein, um Ihre Transaktionen anzuzeigen.");
-                            }
+                            System.out.println("Die letzten 10 Transaktionen für Benutzer-ID: " + currentUser.getId());
+                            currentUser.showLastTenTransactions();
                         }
 
 
