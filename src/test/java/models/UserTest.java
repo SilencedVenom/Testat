@@ -1,11 +1,12 @@
 package models;
 
+import Repository.UserRepository;
+import db.DatabaseConnection;
+import de.hsw.Main;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import de.hsw.Main;
-import Repository.UserRepository;
-import db.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -19,13 +20,20 @@ class UserTest {
     private UserRepository userRepository;
     private Connection connection;
 
+    @AfterAll
+    static void deleteUser() {
+        UserRepository userRepository = new UserRepository();
+        userRepository.deleteUserByEmail("newuser@uni.de");
+    }
+
     @BeforeEach
-    void setUp() throws SQLException{
+    void setUp() throws SQLException {
         connection = DatabaseConnection.getInstance().getConnection();
         connection.setAutoCommit(false); //
         user = new User(1, "testuser@uni.de", "password123", 1000.00, new Timestamp(System.currentTimeMillis()));
         userRepository = new UserRepository();
     }
+
     @AfterEach
     void tearDown() throws SQLException {
         if (connection != null && !connection.isClosed()) {
@@ -68,10 +76,10 @@ class UserTest {
     @Test
     void login() {
         String inputPassword = "password123";
-        assertTrue(user.getPassword().equals(inputPassword), "Login should be successful with correct password");
+        assertEquals(user.getPassword(), inputPassword, "Login should be successful with correct password");
 
         inputPassword = "wrongpassword";
-        assertFalse(user.getPassword().equals(inputPassword), "Login should fail with incorrect password");
+        assertNotEquals(user.getPassword(), inputPassword, "Login should fail with incorrect password");
     }
 
     @Test
