@@ -36,7 +36,7 @@ public class TransactionService {
      */
     public void transactionToUser(String emailReceiver, double balance) {
         if (balance > user.getBalance()) {
-            throw new BalanceExceededException("Die zu überweisende Geldsumme übersteigt deinen Kontostand.");
+            throw new BalanceExceededException("Die zu überweisende Geldsumme übersteigt Ihren Kontostand.");
         }
 
         if (!regexService.isValidEmail(emailReceiver)) {
@@ -95,7 +95,7 @@ public class TransactionService {
      */
     public void withdrawMoney(double balance) {
         if (balance > user.getBalance()) {
-            throw new BalanceExceededException("Die zu überweisende Geldsumme übersteigt deinen Kontostand.");
+            throw new BalanceExceededException("Die zu überweisende Geldsumme übersteigt Ihren Kontostand.");
         } else {
             if (balance >= 0) {
                 user.setBalance(user.getBalance() - balance);

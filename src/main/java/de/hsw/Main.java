@@ -5,7 +5,10 @@ import Exceptions.NegativeTransactionException;
 import Exceptions.TransactionsNotFoundException;
 import Exceptions.UserNotFoundException;
 import Repository.UserRepository;
-import Services.*;
+import Services.CSVService;
+import Services.PinwandService;
+import Services.RegexService;
+import Services.TransactionService;
 import models.User;
 
 import java.sql.Timestamp;
@@ -18,8 +21,8 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("""
-                Möchtest du dich registrieren: 0
-                Möchtest du dich anmelden: 1
+                Möchten Sie sich registrieren: 0
+                Möchten Sie sich anmelden: 1
                 """);
 
         int pointer = scanner.nextInt();
@@ -66,8 +69,8 @@ public class Main {
                                         4. Einzelüberweisung durchführen
                                         5. Massenüberweisung durchführen
                                         6. Geld abheben
-                                        7. Pinwand Beitrag erstellen
-                                        8. Einsicht in meine Pinwand
+                                        7. Pinnwand Beitrag erstellen
+                                        8. Einsicht in meine Pinnwand
                                         9. Benutzer suchen, Pinnwand anzeigen oder Nachricht senden
                                         10. Nachrichten anzeigen
                                         11. Direktnachrichten oder Pinnwand exportieren
@@ -90,7 +93,7 @@ public class Main {
                             String emailReceiver = scanner.nextLine();
                             System.out.println("Bitte geben Sie den zu überweisenden Betrag an.");
                             double amount = scanner.nextDouble();
-                            System.out.println("Bitte geben sie eine Beschreibung an.");
+                            System.out.println("Bitte geben Sie eine Beschreibung an.");
                             String description = scanner.nextLine();
                             try {
                                 transactionService.transactionToUser(emailReceiver, amount);
@@ -113,7 +116,7 @@ public class Main {
                         case 6 -> {
                             // Geldabheben entfernt den Betrag vom Betrag in der Datenbank und zeigt anschließend den aktualisierten Kontostand
                             System.out.println("Use Case 6 ausgewählt.");
-                            System.out.println("Wieviel Geld wollen sie abheben?");
+                            System.out.println("Wieviel Geld wollen Sie abheben?");
                             double geldbetrag = scanner.nextDouble();
                             try {
                                 transactionService.withdrawMoney(geldbetrag);
@@ -127,8 +130,8 @@ public class Main {
                             System.out.println("Use Case 7 ausgewählt.");
                             boolean inputCorrect = false;
                             String input = "";
-                            while(!inputCorrect) {
-                                System.out.println("An wessen pinwand wollen sie schreiben?");
+                            while (!inputCorrect) {
+                                System.out.println("An wessen Pinnwand wollen Sie schreiben?");
 
                                 String userInput = scanner.nextLine();
                                 inputCorrect = regexService.isValidEmail(userInput);
@@ -137,10 +140,10 @@ public class Main {
                             User foundUser = currentUser.findUser(input);
                             if (foundUser != null) {
                                 PinwandService pinwand = new PinwandService();
-                                System.out.println("Was wollen sie an seine Pinwand schreiben?");
+                                System.out.println("Was wollen Sie an seine Pinnwand schreiben?");
                                 String pinwandbeitrag = scanner.nextLine();
                                 pinwand.addBeitragToPinwand(foundUser.getEmail(), pinwandbeitrag, currentUser.getEmail());
-                                System.out.println("Pinwand eintrag wurde erstellt");
+                                System.out.println("Pinnwandeintrag wurde erstellt");
 
                             }
 
@@ -197,16 +200,15 @@ public class Main {
                             System.out.println("Geben Sie die E-Mail-Adresse des Kontakts ein:");
                             String contactEmail = scanner.nextLine();
                             System.out.println("""
-                                                    Was möchten Sie exportieren?
-                                                    1. Direktnachrichten
-                                                    2. Pinnwandbeiträge
-                                                    3. Beides
-                                                    """);
+                                    Was möchten Sie exportieren?
+                                    1. Direktnachrichten
+                                    2. Pinnwandbeiträge
+                                    3. Beides
+                                    """);
                             int exportChoice = scanner.nextInt();
                             scanner.nextLine(); // Zeilenumbruch konsumieren
                             System.out.println("Geben Sie den Dateinamen für den Export ein (ohne Erweiterung):");
                             String fileName = scanner.nextLine();
-
 
 
                             try {
@@ -269,6 +271,7 @@ public class Main {
         scanner.close();
 
     }
+
     // Loginmethode überprüft ob das Passwort mit dem in der Datenbank übereinstimmt
     public static boolean login(String email, String password) {
         UserRepository userRepository = new UserRepository();
@@ -285,6 +288,7 @@ public class Main {
             return false;
         }
     }
+
     // Registrierung
     public static boolean register(String email, String password) {
         UserRepository userRepository = new UserRepository();
