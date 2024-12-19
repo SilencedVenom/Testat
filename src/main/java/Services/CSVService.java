@@ -8,6 +8,7 @@ import models.Message;
 import models.PinwandBeitrag;
 import models.Transaction;
 import models.User;
+
 import java.io.*;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class CSVService {
     }
 
     public List<Transaction> readCSV(String filePath) throws FileNotFoundException {
+        List<String> errors = new ArrayList<>();
         List<Transaction> transactions = new ArrayList<>();
 
         File file = new File(filePath);
@@ -36,28 +38,37 @@ public class CSVService {
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
+            int counter = 0;
             while ((line = br.readLine()) != null) {
+                counter++;
                 if (csvSinglePattern.matcher(line).matches()) {
                     try {
-                        singlePattern(transactions, line);
+                        singlePattern(transactions, line, counter);
                     } catch (UserNotFoundException | IllegalArgumentException e) {
-                        System.out.println(e.getMessage());
+                        errors.add(e.getMessage());
                     }
                 } else if (csvMultiPattern.matcher(line).matches()) {
                     try {
-                        multiPattern(transactions, line);
+                        multiPattern(transactions, line, counter);
                     } catch (UserNotFoundException | IllegalArgumentException e) {
-                        System.out.println(e.getMessage());
+                        errors.add(e.getMessage());
                     }
                 }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        if (!errors.isEmpty()) {
+            for (String error : errors) {
+                System.out.println(error);
+            }
+            return null;
+        }
+
         return transactions;
     }
 
-    public void singlePattern(List<Transaction> transactions, String line) {
+    public void singlePattern(List<Transaction> transactions, String line, int counter) {
         String[] columns = line.split(";");
         Date date = Date.valueOf(columns[0]);
         String receiverEmail = columns[1];
@@ -67,7 +78,7 @@ public class CSVService {
 
         User receiverUser = userRepository.findUserByEmail(receiverEmail);
         if (receiverUser == null) {
-            throw new UserNotFoundException("User " + receiverEmail + " wurde nicht gefunden.");
+            throw new UserNotFoundException("User " + receiverEmail + " wurde nicht gefunden. (Zeile: " + counter + ")");
         }
 
         User senderUser = userRepository.findUserByEmail(senderEmail);
@@ -82,7 +93,7 @@ public class CSVService {
         transactions.add(new Transaction(senderUser.getId(), receiverUser.getId(), amount, description, date));
     }
 
-    public void multiPattern(List<Transaction> transactions, String line) {
+    public void multiPattern(List<Transaction> transactions, String line, int counter) {
         String[] columns = line.split(";");
         String receiverEmail = columns[0];
         double amount = Double.parseDouble(columns[1]);
@@ -90,7 +101,7 @@ public class CSVService {
 
         User receiverUser = userRepository.findUserByEmail(receiverEmail);
         if (receiverUser == null) {
-            throw new UserNotFoundException("User " + receiverEmail + " wurde nicht gefunden.");
+            throw new UserNotFoundException("User " + receiverEmail + " wurde nicht gefunden. (Zeile: " + counter + ")");
         }
 
         if (amount <= 0) {
@@ -127,6 +138,7 @@ public class CSVService {
             throw new RuntimeException(e);
         }
     }
+
     public void exportDirectMessages(String contactEmail, String fileName) {
         String filePath = "./CSV/" + fileName + ".csv";
         MessageRepository messageRepository = new MessageRepository();
@@ -169,6 +181,7 @@ public class CSVService {
             throw new RuntimeException("Fehler beim Schreiben der CSV-Datei", e);
         }
     }
+
     public void exportPinwandBeitraege(String contactEmail, String fileName) {
         String filePath = "./CSV/" + fileName + ".csv";
         PinwandRepository pinwandRepository = new PinwandRepository();

@@ -63,7 +63,10 @@ public class TransactionService {
         if (regexService.isValidFilename(filesPath)) {
             try {
                 List<Transaction> transactions = csvService.readCSV(filesPath);
-
+                if (transactions == null) {
+                    System.out.println("Die Überweisung war nicht erfolgreich, bitte korrigiere die genannten Zeilen.");
+                    return;
+                }
                 for (Transaction transaction : transactions) {
                     User receiver = userRepository.findUserById(transaction.getReceiverId());
                     if (receiver == null) {
@@ -89,6 +92,7 @@ public class TransactionService {
 
     /**
      * Entnimmt den Geldbetrag vom aktuell eingeloggten Kunden
+     *
      * @param balance
      */
     public void withdrawMoney(double balance) {
@@ -103,8 +107,10 @@ public class TransactionService {
             }
         }
     }
+
     /**
      * erzeugen einen CSV export von allen Transactionen eines Users
+     *
      * @param fileName
      */
     public void writeTransactions(String fileName) {
