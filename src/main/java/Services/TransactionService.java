@@ -103,7 +103,7 @@ public class TransactionService {
         }
     }
     /**
-     * Erzeugt einen Filepath zur Weiterverarbietung
+     * erzeugen einen CSV export von allen Transactionen eines Users
      * @param fileName
      */
     public void writeTransactions(String fileName) {

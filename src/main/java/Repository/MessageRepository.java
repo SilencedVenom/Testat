@@ -28,43 +28,6 @@ public class MessageRepository {
         }
     }
 
-
-    // Gibt alle Nachrichten zurück, die ein Benutzer gesendet hat
-    public List<Message> getMessagesBySenderId(int senderId) {
-        String query = "SELECT * FROM messages WHERE sender_id = ?";
-        return getMessages(query, senderId);
-    }
-
-    // Gibt alle Nachrichten zurück, die ein Benutzer empfangen hat
-    public List<Message> getMessagesByReceiverId(int receiverId) {
-        String query = "SELECT * FROM messages WHERE receiver_id = ?";
-        return getMessages(query, receiverId);
-    }
-
-    // Hilfsmethode zum Abrufen von Nachrichten
-    private List<Message> getMessages(String query, int userId) {
-        List<Message> messages = new ArrayList<>();
-        try (Connection connection = DatabaseConnection.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-
-            statement.setInt(1, userId);
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                messages.add(new Message(
-                        resultSet.getInt("id"),
-                        resultSet.getInt("sender_id"),
-                        resultSet.getInt("receiver_id"),
-                        resultSet.getString("message"),
-                        resultSet.getBoolean("is_wall_post"),
-                        resultSet.getTimestamp("created_at")
-                ));
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Fehler beim Abrufen der Nachrichten", e);
-        }
-        return messages;
-    }
     public List<Message> getDirectMessages(int userId, int contactId) {
         String query = "SELECT * FROM messages " +
                 "WHERE ((sender_id = ? AND receiver_id = ?) " +
