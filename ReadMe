@@ -1,0 +1,4 @@
+Hallo, Sie müssen den Port auf ihren Port umstellen und Benutzername Und Passwort ändern.
+In dem Pfad Testat->src->main->java->db finden sie unser Create statement für die Datenbank.
+Zu den UnitTest eine kleine Anmerkung wir haben nur UnitTests Geschrieben wenn unser Porgramm eine Logik ausführt.
+Die CSV Datein werden in dem Testat->SCV Ordner gelesen und geschrieben
