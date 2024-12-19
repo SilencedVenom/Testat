@@ -4,8 +4,10 @@ public class RegexService {
 
     public RegexService() {
     }
+
     /**
      * Überprüft ob email Korrekt ist
+     *
      * @param input
      * @return {@code true} wenn die Syntax stimmt
      */
@@ -13,10 +15,12 @@ public class RegexService {
         if (input == null) {
             return false;
         }
-        return input.matches("^[A-Za-z0+9+_.-]+@(.+)$");
+        return input.matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$");
     }
+
     /**
      * Überprüft ob Passwort den anforderungen entspricht
+     *
      * @param input
      * @return {@code true} wenn die Syntax stimmt
      */
@@ -30,6 +34,7 @@ public class RegexService {
 
     /**
      * Überpfüt ob input den Anforderung an Filename entspricht
+     *
      * @param input
      * @return {@code true} wenn die Syntax stimmt
      */
