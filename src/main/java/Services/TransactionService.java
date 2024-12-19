@@ -11,6 +11,7 @@ import models.User;
 
 import java.io.FileNotFoundException;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionService {
@@ -35,7 +36,7 @@ public class TransactionService {
      */
     public void transactionToUser(String emailReceiver, double balance) {
         if (balance > user.getBalance()) {
-            throw new BalanceExceededException("Die zu überweisende Geldsumme übersteigt deinen Kontostand.");
+            throw new BalanceExceededException("Die zu überweisende Geldsumme übersteigt Ihren Kontostand.");
         }
 
         if (!regexService.isValidEmail(emailReceiver)) {
@@ -97,11 +98,16 @@ public class TransactionService {
      */
     public void withdrawMoney(double balance) {
         if (balance > user.getBalance()) {
-            throw new BalanceExceededException("Die zu überweisende Geldsumme übersteigt deinen Kontostand.");
+            throw new BalanceExceededException("Die zu überweisende Geldsumme übersteigt Ihren Kontostand.");
         } else {
             if (balance >= 0) {
                 user.setBalance(user.getBalance() - balance);
                 System.out.println("Sie haben " + balance + "€ abgehoben.");
+                userRepository.updateBalance(this.user.getEmail(), this.user.getBalance());
+                Transaction transaction = new Transaction(user.getId(), user.getId(), balance, "Abhebung", new Date(System.currentTimeMillis()));
+                List<Transaction> list = new ArrayList<>();
+                list.add(transaction);
+                transactionRepository.sendTransaction(list);
             } else {
                 System.out.println("Sie können keine negativen Abbuchungen durchführen");
             }
