@@ -54,11 +54,9 @@ public class Main {
                 }
                 boolean programmRuning = true;
 
-                PinwandService pinwandService = new PinwandService();
                 TransactionService transactionService = new TransactionService(currentUser);
 
                 RegexService regexService = new RegexService();
-                // CSVService-Instanz erstellen
                 CSVService csvService = new CSVService(currentUser);
 
                 while (programmRuning) {
@@ -126,7 +124,7 @@ public class Main {
                             currentUser.showMyBalance();
                         }
                         case 7 -> {
-                            // 1. Sucht User 2. Abfrage Was an die Pinwand Soll Anschließend neuen Pinwandeintrag generiert
+                            // 1. Sucht User 2. Abfrage was an die Pinnwand soll. Anschließend neuen Pinnwandeintrag generiert.
                             System.out.println("Use Case 7 ausgewählt.");
                             boolean inputCorrect = false;
                             String input = "";
@@ -149,7 +147,7 @@ public class Main {
 
                         }
                         case 8 -> {
-                            // Zeigt die eigene Pinwand
+                            // Zeigt die eigene Pinnwand.
                             System.out.println("Use Case 8 ausgewählt.");
                             currentUser.showPinwand();
                         }
@@ -272,7 +270,7 @@ public class Main {
 
     }
 
-    // Loginmethode überprüft ob das Passwort mit dem in der Datenbank übereinstimmt
+    // Loginmethode überprüft, ob das Passwort mit dem in der Datenbank übereinstimmt
     public static boolean login(String email, String password) {
         UserRepository userRepository = new UserRepository();
         User user = userRepository.findUserByEmail(email);
