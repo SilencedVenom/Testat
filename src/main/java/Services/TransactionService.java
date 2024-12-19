@@ -11,6 +11,7 @@ import models.User;
 
 import java.io.FileNotFoundException;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionService {
@@ -89,6 +90,7 @@ public class TransactionService {
 
     /**
      * Entnimmt den Geldbetrag vom aktuell eingeloggten Kunden
+     *
      * @param balance
      */
     public void withdrawMoney(double balance) {
@@ -98,13 +100,20 @@ public class TransactionService {
             if (balance >= 0) {
                 user.setBalance(user.getBalance() - balance);
                 System.out.println("Sie haben " + balance + "€ abgehoben.");
+                userRepository.updateBalance(this.user.getEmail(), this.user.getBalance());
+                Transaction transaction = new Transaction(user.getId(), user.getId(), balance, "Abhebung", new Date(System.currentTimeMillis()));
+                List<Transaction> list = new ArrayList<>();
+                list.add(transaction);
+                transactionRepository.sendTransaction(list);
             } else {
                 System.out.println("Sie können keine negativen Abbuchungen durchführen");
             }
         }
     }
+
     /**
      * erzeugen einen CSV export von allen Transactionen eines Users
+     *
      * @param fileName
      */
     public void writeTransactions(String fileName) {
